@@ -124,6 +124,12 @@ $ bnlearn>python irelease.py -c 0
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig2.png" width="600" />
 </p>
 
+You need to do one final edit on github:
+<p align="left">
+  <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig3.png" width="400" />
+  <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig4.png" width="400" />
+</p>
+
 ### Citation
 Please cite irelease in your publications if this is useful for your research. Here is an example BibTeX entry:
 ```BibTeX
