@@ -4,7 +4,7 @@
 [![PyPI Version](https://img.shields.io/pypi/v/irelease)](https://pypi.org/project/irelease/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/irelease/blob/master/LICENSE)
 [![Downloads](https://pepy.tech/badge/irelease/week)](https://pepy.tech/project/irelease/week)
-[![Donate Bitcoin](https://img.shields.io/badge/donate-orange.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)
+[![Donate Bitcoin](https://img.shields.io/badge/donate-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)
 
 * irelease is Python package that will help to irelease your python package on both github and pypi.
 A new release of your package is created by taking the following steps:
