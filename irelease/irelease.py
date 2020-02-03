@@ -13,6 +13,139 @@ from packaging import version
 EXCLUDE_DIR = np.array(['depricated','__pycache__','_version','.git','.gitignore','build','dist','doc','docs'])  # noqa
 
 
+# %% Make executable:
+def make_executable():
+    """Create bash file to release your package.
+
+    Returns
+    -------
+    release.sh
+
+    """
+    curpath = os.path.dirname(os.path.abspath(__file__))
+    release_path = os.path.join(curpath, 'irelease.py')
+    f = open("release.sh", "w")
+    f.write('#!/bin/sh')
+    f.write('\necho "release your packge.."')
+    f.write('\npython "' + release_path + '"')
+    f.write('\nread -p "Press [Enter] to close"')
+    f.close()
+
+
+# %% def main(username, packagename=None, verbose=3):
+def main(username, packagename, clean=False, twine=None, verbose=3):
+    """Make new release on github and pypi.
+
+    Description
+    -----------
+    A new release is created by taking the underneath steps:
+        1. List all files in current directory and exclude all except the directory-of-interest
+        2. Extract the version from the __init__.py file
+        3. Remove old build directories such as dist, build and x.egg-info
+        4. Git pull
+        5. Get latest version from github
+        6. Check if the current version is newer then github lates--version.
+            a. Make new wheel, build and install package
+            b. Set tag to newest version and push to git
+            c. Upload to pypi (credentials required)
+
+    Parameters
+    ----------
+    username : str
+        Name of the github account.
+    packagename : str
+        Name of the package.
+    clean : bool
+        Clean local distribution files for packaging.
+    twine : str
+        Filepath to the executable of twine.
+    verbose : int
+        Print message. The default is 3.
+
+    Returns
+    -------
+    None.
+
+
+    References
+    ----------
+    * https://dzone.com/articles/executable-package-pip-install
+    * https://blog.ionelmc.ro/presentations/packaging/#slide:8
+
+    """
+    # Set defaults
+    username, packagename, clean, twine, verbose = _set_defaults(username, packagename, clean, twine, verbose)
+    # Get package name
+    packagename = _package_name(packagename, verbose=verbose)
+    assert packagename is not None, print('[release] ERROR: Package directory does not exists.')
+    assert username is not None, print('[release] ERROR: Github name does not exists.')
+
+    # Get init file from the dir of interest
+    initfile = os.path.join(packagename, "__init__.py")
+
+    if verbose>=3:
+        os.system('cls')
+        print('----------------------------------')
+        print('[release] username  : %s' %username)
+        print('[release] Package   : %s' %packagename)
+        print('[release] Cleaning  : %s' %clean)
+        print('[release] Verbosity : %s' %verbose)
+        print('[release] init file : %s' %initfile)
+
+    # Find version
+    if os.path.isfile(initfile):
+        # Extract version from __init__.py
+        getversion = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", open(initfile, "rt").read(), re.M)
+        if getversion:
+            # Remove build directories
+            if verbose>=3 and clean:
+                input("[release] Press [Enter] to clean previous local builds from the package directory..")
+                _make_clean(packagename, verbose=verbose)
+            # Version found, lets move on:
+            current_version = getversion.group(1)
+            # Get latest version of github release
+            githubversion = github_version(username, packagename, verbose=verbose)
+
+            # Print info about the version
+            if githubversion=='0.0.0':
+                if verbose>=3: print("[release] Very first release for [%s]" %(packagename))
+                VERSION_OK = True
+            elif githubversion=='9.9.9':
+                if verbose>=3: print("[release] %s/%s not available at github." %(username, packagename))
+                VERSION_OK = False
+            elif version.parse(current_version)>version.parse(githubversion):
+                if verbose>=3: print('[release] Current local version from __init__.py: %s and from github: %s' %(current_version, githubversion))
+                VERSION_OK = True
+            else:
+                VERSION_OK = False
+
+            # Continue is version is TRUE
+            if VERSION_OK:
+                if verbose>=3: input("Press Enter to make build and release [%s] on github..." %(current_version))
+                # Make build and install
+                _make_build_and_install(packagename, current_version)
+                # Set tag to github and push
+                _github_set_tag_and_push(current_version, verbose=verbose)
+                # Upload to pypi
+                if os.path.isfile(twine):
+                    if verbose>=3: input("Press Enter to upload to pypi...")
+                    os.system(twine + ' upload dist/*')
+
+                if verbose>=2: print('[release] ALL RIGHT! Everything is succesfully done!\nBut you still need to do one more thing.\nGo to your github most recent releases (this one) and [edit tag] > the set the version nubmer in the [Release title].')
+            elif (githubversion != '9.9.9') and (githubversion != '0.0.0'):
+                if verbose>=2: print('[release] WARNING: Not released! You need to increase your version: [%s]' %(initfile))
+                if verbose>=2: print('[release] WARNING: Local version : %s' %(current_version))
+                if verbose>=2: print('[release] WARNING: github version: %s' %(githubversion))
+
+        else:
+            if verbose>=1: print("[release] ERROR: Unable to find version string in %s. Make sure that the operators are space seperated eg.: __version__ = '0.1.0'" % (initfile,))
+    else:
+        if verbose>=2: print('[release] Warning: __init__.py File not found: %s' %(initfile))
+
+    if verbose>=3: input("[release] Press [Enter] to exit.")
+
+
+# %% Get latest github version
 def github_version(username, packagename, verbose=3):
     """Get latest github version for package.
 
