@@ -6,7 +6,7 @@
 [![Downloads](https://pepy.tech/badge/irelease/week)](https://pepy.tech/project/irelease/week)
 [![Donate Bitcoin](https://img.shields.io/badge/donate-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)
 
-* irelease is Python package that will help to irelease your python package on both github and pypi.
+* irelease is Python package that will help to release your python package on both github and pypi.
 A new release of your package is created by taking the following steps:
     1. Extract the version from the __init__.py file
     2. Remove old build directories such as dist, build and x.egg-info
@@ -42,7 +42,7 @@ git clone https://github.com/erdogant/irelease.git
 cd irelease
 python setup.py install
 ```
-### irelease arguments
+### Arguments or irelease
 Go to the directory where the package is you want to release and run irelease by: 
 ```bash
 $ python irelease.py
@@ -90,7 +90,25 @@ Your package to-be-published must have the correct structure. At least these fil
     └── ...
 ```
 
-### irelease bnlearn as an example:
+* To release your package, to most easy way is to generate a release bash file using irlease.
+```python
+# 1. Go into your package directory
+# 2. start ptyhon
+# 3. Import irelease and create bash file
+# 4. Your package dir must contain an extra file named: release.sh
+# 5. Run it.
+
+# $ python
+import irelease
+irelease.make_executable()
+exit()
+```
+
+```bash
+$ release.sh
+```
+
+### Example: releasing package: bnlearn:
 ```bash
     bnlearn/
     ├── bnlearn/
@@ -106,11 +124,20 @@ Your package to-be-published must have the correct structure. At least these fil
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig1.png" width="500" />
 </p>
 
+* Option 1: Create release bash file and run. 
 ```bash
-# Run to irelease your package:
-$ bnlearn>python irelease.py
-$ bnlearn>python C:\Users\Erdogan\Miniconda3\envs\env_IMAGE\Lib\site-packages\irelease\irelease.py
+$ python
+>>> import irelease
+>>> irelease.make_executable()
+$ release.sh
+```
 
+* Option 2: Run python file. 
+```bash
+$ bnlearn>python C:\Users\Erdogan\Miniconda3\envs\env_TEST\Lib\site-packages\irelease\irelease.py
+```
+
+```bash
 # Package can be specified:
 $ \bnlearn>python irelease -p bnlearn
 
