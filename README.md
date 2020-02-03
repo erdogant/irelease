@@ -48,7 +48,7 @@ Go to the directory where the package is you want to release and run irelease by
 $ python irelease.py
 ```
 
-The following arguments are availble to use the irelease package: 
+The following arguments are availble:
 ```bash
 # Github name
 irelease -u <githubname>
