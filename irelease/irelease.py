@@ -199,7 +199,9 @@ def github_version(username, packagename, verbose=3):
             next_char = re.search(',',tag_ver)
             github_version = tag_ver[:next_char.start()].replace('"','')
         except:
-            if verbose>=1: print('[release] ERROR: Can not find the latest github version!\nPrivate repo? or doest not exists? or there is no release yet?: [https://github.com//%s/%s]' %(username, packagename))
+            if verbose>=1: 
+                print('[release] ERROR: Can not find the latest github version!')
+                print('[release] ERROR: Maybe repo Private or does not exists?')
             github_version = '9.9.9'
 
     if verbose>=4: print('[release] Github version: %s' %(github_version))
