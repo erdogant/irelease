@@ -31,6 +31,7 @@ def make_executable():
     f.write('\npython "' + release_path + '"')
     f.write('\nread -p "Press [Enter] to close"')
     f.close()
+    print('[irelease] release.sh file created!')
 
 
 # %% def main(username, packagename=None, verbose=3):
@@ -159,7 +160,7 @@ def _fin_message(username, packagename, current_version, githubversion, verbose)
 
     # Open webbroswer and navigate to github to add version
     if verbose>=3: input("[release] Press Enter to navigate...")
-    git_release_link = 'https://github.com/' + packagename + '/' + packagename + '/releases/tag/' + current_version
+    git_release_link = 'https://github.com/' + username + '/' + packagename + '/releases/tag/' + current_version
     webbrowser.open(git_release_link, new=2)
     if verbose>=2: print('[release] %s' %(git_release_link))
     if verbose>=2: print('[release] ==================================================================')
