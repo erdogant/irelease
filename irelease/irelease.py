@@ -123,14 +123,14 @@ def main(username, packagename, clean=False, twine=None, verbose=3):
 
             # Continue is version is TRUE
             if VERSION_OK:
-                if verbose>=3: input("Press Enter to make build and release [%s] on github..." %(current_version))
+                if verbose>=3: input("[release] Press Enter to make build and release [%s] on github..." %(current_version))
                 # Make build and install
                 _make_build_and_install(packagename, current_version)
                 # Set tag to github and push
                 _github_set_tag_and_push(current_version, verbose=verbose)
                 # Upload to pypi
                 if os.path.isfile(twine):
-                    if verbose>=3: input("Press Enter to upload to pypi...")
+                    if verbose>=3: input("[release] Press Enter to upload to pypi...")
                     twine_line = twine + ' upload dist/*'
                     if verbose>=3: print('[release] %s' %(twine_line))
                     os.system(twine_line)
