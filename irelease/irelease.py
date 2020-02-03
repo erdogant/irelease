@@ -151,16 +151,18 @@ def main(username, packagename, clean=False, twine=None, verbose=3):
 def _fin_message(username, packagename, current_version, githubversion, verbose):
     if verbose>=2: print('[release] ==================================================================')
     if verbose>=2: print('[release] FIN!')
-    if verbose>=2: print('[release] >  But you still need to do one more thing>')
-    if verbose>=2: print('[release] 1. Go to your github most recent releases')
-    if verbose>=2: print('[release] 2. [edit tag] > the set the version nubmer in the [Release title].')
+    if verbose>=2: print('[release] >  But you still need to do one more thing.')
+    if verbose>=2: print('[release] 1. Go to your github most recent releases.')
+    if verbose>=2: print('[release] 2. Press [edit tag]')
     if verbose>=2: print('[release] 3. Set the version number in the [Release title].')
     if verbose>=2: print('[release] ==================================================================')
 
     # Open webbroswer and navigate to github to add version
-    if verbose>=3: input("Press Enter to navigate...")
+    if verbose>=3: input("[release] Press Enter to navigate...")
     git_release_link = 'https://github.com/' + packagename + '/' + packagename + '/releases/tag/' + current_version
-    webbrowser.open(os.path.abspath(git_release_link), new=2)
+    webbrowser.open(git_release_link, new=2)
+    if verbose>=2: print('[release] %s' %(git_release_link))
+    if verbose>=2: print('[release] ==================================================================')
 
 
 # %% Get latest github version
