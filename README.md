@@ -13,11 +13,10 @@ A new release of your package is created by taking the following steps:
     3. Git pull (to make sure all is up to date)
     4. Get latest release version at github
     5. Check if the local (current) version is newer then the latest github release.
-
-        a. Make new wheel, build and install package
-        b. Set tag to newest version
-        c. Push to git
-        d. Upload to pypi (credentials required)
+        >Make new wheel, build and install package
+        >Set tag to newest version
+        >Push to git
+        >Upload to pypi (credentials for pypi required)
 
 ## Contents
 - [Installation](#-installation)
