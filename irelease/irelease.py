@@ -8,6 +8,7 @@ import numpy as np
 import urllib.request
 import shutil
 from packaging import version
+import webbrowser
 # import yaml
 # yaml.warnings({'YAMLLoadWarning': False})
 EXCLUDE_DIR = np.array(['depricated','__pycache__','_version','.git','.gitignore','build','dist','doc','docs'])  # noqa
@@ -130,8 +131,9 @@ def main(username, packagename, clean=False, twine=None, verbose=3):
                 if os.path.isfile(twine):
                     if verbose>=3: input("Press Enter to upload to pypi...")
                     os.system(twine + ' upload dist/*')
+                # Fin message and webbrowser
+                _fin_message(username, packagename, current_version, githubversion, verbose)
 
-                if verbose>=2: print('[release] ALL RIGHT! Everything is succesfully done!\nBut you still need to do one more thing.\nGo to your github most recent releases (this one) and [edit tag] > the set the version nubmer in the [Release title].')
             elif (githubversion != '9.9.9') and (githubversion != '0.0.0'):
                 if verbose>=2: print('[release] WARNING: Not released! You need to increase your version: [%s]' %(initfile))
                 if verbose>=2: print('[release] WARNING: Local version : %s' %(current_version))
@@ -143,6 +145,22 @@ def main(username, packagename, clean=False, twine=None, verbose=3):
         if verbose>=2: print('[release] Warning: __init__.py File not found: %s' %(initfile))
 
     if verbose>=3: input("[release] Press [Enter] to exit.")
+
+
+# %% Final message
+def _fin_message(username, packagename, current_version, githubversion, verbose):
+    if verbose>=2: print('[release] ==================================================================')
+    if verbose>=2: print('[release] FIN!')
+    if verbose>=2: print('[release] >  But you still need to do one more thing>')
+    if verbose>=2: print('[release] 1. Go to your github most recent releases')
+    if verbose>=2: print('[release] 2. [edit tag] > the set the version nubmer in the [Release title].')
+    if verbose>=2: print('[release] 3. Set the version number in the [Release title].')
+    if verbose>=2: print('[release] ==================================================================')
+
+    # Open webbroswer and navigate to github to add version
+    if verbose>=3: input("Press Enter to navigate...")
+    git_release_link = 'https://github.com/' + packagename + '/' + packagename + '/releases/tag/' + current_version
+    webbrowser.open(os.path.abspath(git_release_link), new=2)
 
 
 # %% Get latest github version
@@ -196,10 +214,10 @@ def github_version(username, packagename, verbose=3):
             # Find the next tag by the seperation of the comma. Do +20 or so to make sure a very very long version would also be included.
             # github_version = yaml.load(github_page)['tag_name']
             tag_ver = github_page[tag_name.end() + 1:(tag_name.end() + 20)]
-            next_char = re.search(',',tag_ver)
+            next_char = re.search(',', tag_ver)
             github_version = tag_ver[:next_char.start()].replace('"','')
         except:
-            if verbose>=1: 
+            if verbose>=1:
                 print('[release] ERROR: Can not find the latest github version!')
                 print('[release] ERROR: Maybe repo Private or does not exists?')
             github_version = '9.9.9'
@@ -225,13 +243,14 @@ def _github_set_tag_and_push(current_version, verbose=3):
     # git commit
     if verbose>=3: print('[release] git add->commit->push')
     os.system('git add .')
-    os.system('git commit -m v' + current_version)
+    os.system('git commit -m ' + current_version)
+    # os.system('git commit -m v' + current_version)
     # os.system('git push')
     # Set tag for this version
     if verbose>=3: print('Set new version tag: %s' %(current_version))
-    # git tag -a v0.1.0 -d v0.1.0
-    os.system('git tag -a v' + current_version + ' -m "v' + current_version + '"')
-    # os.system('git tag -a ' + current_version + ' -m "' + current_version + '"')
+    # git tag -a 0.1.0 -d "0.1.0"
+    # os.system('git tag -a v' + current_version + ' -m "v' + current_version + '"')
+    os.system('git tag -a ' + current_version + ' -m "' + current_version + '"')
     os.system('git push origin --tags')
 
 
