@@ -131,7 +131,9 @@ def main(username, packagename, clean=False, twine=None, verbose=3):
                 # Upload to pypi
                 if os.path.isfile(twine):
                     if verbose>=3: input("Press Enter to upload to pypi...")
-                    os.system(twine + ' upload dist/*')
+                    twine_line = twine + ' upload dist/*'
+                    if verbose>=3: print('[release] %s' %(twine_line))
+                    os.system(twine_line)
                 # Fin message and webbrowser
                 _fin_message(username, packagename, current_version, githubversion, verbose)
 
