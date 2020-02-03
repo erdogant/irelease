@@ -256,113 +256,6 @@ def _package_name(packagename, verbose=3):
     return(packagename)
 
 
-# %% def main(username, packagename=None, verbose=3):
-def main(username, packagename, makeclean=False, twine=None, verbose=3):
-    """Make new release on github and pypi.
-
-    Description
-    -----------
-    A new release is created by taking the underneath steps:
-        1. List all files in current directory and exclude all except the directory-of-interest
-        2. Extract the version from the __init__.py file
-        3. Remove old build directories such as dist, build and x.egg-info
-        4. Git pull
-        5. Get latest version from github
-        6. Check if the current version is newer then github lates--version.
-            a. Make new wheel, build and install package
-            b. Set tag to newest version and push to git
-            c. Upload to pypi (credentials required)
-
-    Parameters
-    ----------
-    username : str
-        Name of the github account.
-    packagename : str
-        Name of the package.
-    makeclean : bool
-        Clean local distribution files for packaging.
-    twine : str
-        Filepath to the executable of twine.
-    verbose : int
-        Print message. The default is 3.
-
-    Returns
-    -------
-    None.
-
-
-    References
-    ----------
-    * https://dzone.com/articles/executable-package-pip-install
-    * https://blog.ionelmc.ro/presentations/packaging/#slide:8
-
-    """
-    # Get package name
-    packagename = _package_name(packagename, verbose=verbose)
-    assert packagename is not None, print('[release] ERROR: Package directory does not exists.')
-    assert username is not None, print('[release] ERROR: Github name does not exists.')
-
-    # Get init file from the dir of interest
-    initfile = os.path.join(packagename, "__init__.py")
-
-    if verbose>=3:
-        os.system('cls')
-        print('----------------------------------')
-        print('[release] username  : %s' %username)
-        print('[release] Package   : %s' %packagename)
-        print('[release] Cleaning  : %s' %makeclean)
-        print('[release] Verbosity : %s' %verbose)
-        print('[release] init file : %s' %initfile)
-
-    # Find version
-    if os.path.isfile(initfile):
-        # Extract version from __init__.py
-        getversion = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", open(initfile, "rt").read(), re.M)
-        if getversion:
-            # Remove build directories
-            if verbose>=3 and makeclean:
-                input("[release] Press Enter to clean previous local builds from the package directory..")
-                _make_clean(packagename, verbose=verbose)
-            # Version found, lets move on:
-            current_version = getversion.group(1)
-            # Get latest version of github release
-            githubversion = github_version(username, packagename, verbose=verbose)
-
-            # Continue with the process of building a new version if the current version is newer then the one on github.
-            if githubversion=='0.0.0':
-                if verbose>=3: print("[release] Very first release for [%s]" %(packagename))
-                VERSION_OK = True
-            elif githubversion=='9.9.9':
-                if verbose>=3: print("[release] %s/%s not available at github." %(username, packagename))
-                VERSION_OK = False
-            elif version.parse(current_version)>version.parse(githubversion):
-                if verbose>=3: print('[release] Current local version from __init__.py: %s and from github: %s' %(current_version, githubversion))
-                VERSION_OK = True
-            else:
-                VERSION_OK = False
-
-            # Continue is version is TRUE
-            if VERSION_OK:
-                if verbose>=3: input("Press Enter to make build and release [%s] on github..." %(current_version))
-                # Make build and install
-                _make_build_and_install(packagename, current_version)
-                # Set tag to github and push
-                _github_set_tag_and_push(current_version, verbose=verbose)
-                # Upload to pypi
-                if os.path.isfile(twine):
-                    if verbose>=3: input("Press Enter to upload to pypi...")
-                    os.system(twine + ' upload dist/*')
-
-                if verbose>=2: print('[release] ALL RIGHT! Everything is succesfully done!\nBut you still need to do one more thing.\nGo to your github most recent releases (this one) and [edit tag] > the set the version nubmer in the [Release title].')
-            elif (githubversion != '9.9.9') and (githubversion != '0.0.0'):
-                if verbose>=2: print('[release] WARNING: Not released! You need to increase your version: [%s]' %(initfile))
-
-        else:
-            if verbose>=1: print("[release] ERROR: Unable to find version string in %s. Make sure that the operators are space seperated eg.: __version__ = '0.1.0'" % (initfile,))
-    else:
-        if verbose>=2: print('[release] Warning: __init__.py File not found: %s' %(initfile))
-
-
 # %% Extract github username from config file
 def _github_username(verbose=3):
     username=None
@@ -404,6 +297,31 @@ def _github_package(verbose=3):
     return package
 
 
+def _set_defaults(username, packagename, clean, twine, verbose):
+    # Default verbosity value is 0
+    if verbose is None:
+        verbose=3
+
+    if clean is None or clean==1:
+        clean=True
+    else:
+        clean=False
+
+    if twine is None:
+        twine = ''
+        if platform.system().lower()=='windows':
+            twine = os.environ['TWIN.EXE']
+            # TWINE_PATH = 'C://Users/<USER>/AppData/Roaming/Python/Python36/Scripts/twine.exe'
+
+    if username is None:
+        username = _github_username(verbose=verbose)
+
+    if packagename is None:
+        packagename = _github_package(verbose=verbose)
+
+    return username, packagename, clean, twine, verbose
+
+
 # %% Main function
 if __name__ == '__main__':
     # main
@@ -416,26 +334,5 @@ if __name__ == '__main__':
     parser.add_argument("-t", "--twine", type=str, help="Path to twine that is used to upload to pypi.")
     args = parser.parse_args()
 
-    # Default verbosity value is 0
-    if args.verbosity is None:
-        args.verbosity=3
-
-    if args.clean is None or args.clean==1:
-        args.clean=True
-    else:
-        args.clean=False
-
-    if args.twine is None:
-        args.twine = ''
-        if platform.system().lower()=='windows':
-            args.twine = os.environ['TWIN.EXE']
-            # TWINE_PATH = 'C://Users/<USER>/AppData/Roaming/Python/Python36/Scripts/twine.exe'
-
-    if args.username is None:
-        args.username = _github_username(verbose=args.verbosity)
-
-    if args.package is None:
-        args.package = _github_package(verbose=args.verbosity)
-
     # Go to main
-    main(args.username, args.package, makeclean=args.clean, twine=args.twine, verbose=args.verbosity)
+    main(args.username, args.package, clean=args.clean, twine=args.twine, verbose=args.verbosity)
