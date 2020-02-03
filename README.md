@@ -94,8 +94,8 @@ Your package to-be-published must have the correct structure. At least these fil
 ```python
 # 1. Go into your package directory
 # 2. start ptyhon
-# 3. Import irelease and create bash file
-# 4. Your package dir must contain an extra file named: release.sh
+# 3. Import irelease, run irelease.make_executable()
+# 4. A new file (release.sh) is created in your package directory.
 # 5. Run it.
 
 # $ python
@@ -103,12 +103,11 @@ import irelease
 irelease.make_executable()
 exit()
 ```
-
 ```bash
 $ release.sh
 ```
 
-### Example: releasing package: bnlearn:
+### Example: releasing bnlearn package.
 ```bash
     bnlearn/
     ├── bnlearn/
