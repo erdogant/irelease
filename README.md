@@ -16,7 +16,7 @@ A new release of your package is created by taking the following steps:
         a. Make new wheel, build and install package
         b. Set tag to newest version
         c. Push to git
-        d. Upload to pypi (credentials required)
+        d. Upload to pypi (credentials for pypi required)
 
 ## Contents
 - [Installation](#-installation)
@@ -48,7 +48,7 @@ Go to the directory where the package is you want to release and run irelease by
 $ python irelease.py
 ```
 
-The following arguments are availble to use the irelease package: 
+The following arguments are availble:
 ```bash
 # Github name
 irelease -u <githubname>
@@ -94,8 +94,8 @@ Your package to-be-published must have the correct structure. At least these fil
 ```python
 # 1. Go into your package directory
 # 2. start ptyhon
-# 3. Import irelease and create bash file
-# 4. Your package dir must contain an extra file named: release.sh
+# 3. Import irelease, run irelease.make_executable()
+# 4. A new file (release.sh) is created in your package directory.
 # 5. Run it.
 
 # $ python
@@ -103,12 +103,11 @@ import irelease
 irelease.get_script()
 exit()
 ```
-
 ```bash
 $ release.sh
 ```
 
-### Example: releasing package: bnlearn:
+### Example: releasing bnlearn package.
 ```bash
     bnlearn/
     ├── bnlearn/
