@@ -90,7 +90,7 @@ Your package to-be-published must have the correct structure. At least these fil
     └── ...
 ```
 
-* To release your package, to most easy way is to generate a release bash file using irlease.
+* To release your package you can generate a release.py and bash file and run it.
 ```python
 # 1. Go into your package directory
 # 2. start ptyhon
@@ -104,6 +104,8 @@ irelease.get_script()
 exit()
 ```
 ```bash
+$ python release.py
+or
 $ release.sh
 ```
 
