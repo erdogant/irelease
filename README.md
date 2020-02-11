@@ -100,7 +100,7 @@ Your package to-be-published must have the correct structure. At least these fil
 
 # $ python
 import irelease
-irelease.make_executable()
+irelease.get_script()
 exit()
 ```
 
@@ -128,7 +128,7 @@ $ release.sh
 ```bash
 $ python
 >>> import irelease
->>> irelease.make_executable()
+>>> irelease.get_script()
 $ release.sh
 ```
 

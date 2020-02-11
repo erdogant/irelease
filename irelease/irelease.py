@@ -16,11 +16,11 @@ import urllib.request
 import shutil
 from packaging import version
 import webbrowser
-EXCLUDE_DIR = np.array(['depricated','__pycache__','_version','.git','.gitignore','build','dist','doc','docs'])  # noqa
+EXCLUDE_DIR = np.array(['depricated','__pycache__','_version','.git','.gitignore','build','dist','doc','docs'])
 
 
 # %% Make executable:
-def make_executable():
+def get_script():
     """Create bash file to release your package.
 
     Returns

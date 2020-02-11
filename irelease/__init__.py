@@ -1,5 +1,5 @@
 from irelease.irelease import(
-    make_executable,
+    get_script,
     main)
 
 __author__ = 'Erdogan Tasksen'
@@ -20,7 +20,7 @@ Example
 
 # Start Python:
 >>> import irelease
->>> irelease.make_executable()
+>>> irelease.get_script()
 
 # In your terminal:
 $ python release.py
