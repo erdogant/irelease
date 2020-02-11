@@ -94,7 +94,7 @@ Your package to-be-published must have the correct structure. At least these fil
 ```python
 # 1. Go into your package directory
 # 2. start ptyhon
-# 3. Import irelease, run irelease.make_executable()
+# 3. Import irelease, run irelease.get_script()
 # 4. A new file (release.sh) is created in your package directory.
 # 5. Run it.
 
