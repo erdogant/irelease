@@ -130,6 +130,8 @@ $ release.sh
 $ python
 >>> import irelease
 >>> irelease.get_script()
+$ python release.py
+or
 $ release.sh
 ```
 
