@@ -90,7 +90,7 @@ Your package to-be-published must have the correct structure. At least these fil
     └── ...
 ```
 
-* To release your package, to most easy way is to generate a release bash file using irlease.
+* To release your package you can generate a release.py and bash file and run it.
 ```python
 # 1. Go into your package directory
 # 2. start ptyhon
@@ -104,6 +104,8 @@ irelease.make_script()
 exit()
 ```
 ```bash
+$ python release.py
+or
 $ release.sh
 ```
 
@@ -152,8 +154,8 @@ $ bnlearn>python irelease.py -c 0
 
 You need to do one final edit on github:
 <p align="left">
-  <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig3.png" width="400" />
-  <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig4.png" width="400" />
+  <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig3.png" width="600" />
+  <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig4.png" width="600" />
 </p>
 
 ### Citation
