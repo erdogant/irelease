@@ -11,4 +11,4 @@ print(irelease.__version__)
 dir(irelease)
 
 # %%
-irelease.get_script()
+irelease.make_script()

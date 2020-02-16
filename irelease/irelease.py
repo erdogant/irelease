@@ -20,7 +20,7 @@ EXCLUDE_DIR = np.array(['depricated','__pycache__','_version','.git','.gitignore
 
 
 # %% Make executable:
-def get_script():
+def make_script():
     """Create bash file to release your package.
 
     Returns
