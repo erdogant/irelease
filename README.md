@@ -20,7 +20,7 @@ A new release of your package is created by taking the following steps:
         c. Push to git
         d. Upload to pypi (credentials for pypi required)
 
-
+---------------
 ## Contents
 - [Installation](#-installation)
 - [Requirements](#-Requirements)
