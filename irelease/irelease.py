@@ -124,7 +124,7 @@ def run(username, packagename, clean=False, twine=None, verbose=3):
                 if verbose>=3: print("[irelease] %s/%s not available at github." %(username, packagename))
                 VERSION_OK = False
             elif version.parse(current_version)>version.parse(githubversion):
-                if verbose>=3: print('[irelease] Current local version from __init__.py: %s and from github: %s' %(current_version, githubversion))
+                if verbose>=3: print('[irelease] Current local version from github: %s and from __init__.py: %s' %(githubversion, current_version))
                 VERSION_OK = True
             else:
                 VERSION_OK = False
