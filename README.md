@@ -8,16 +8,18 @@
 
 * irelease is Python package that will help to release your python package on both github and pypi.
 A new release of your package is created by taking the following steps:
-    1. Extract the version from the __init__.py file
-    2. Remove old build directories such as dist, build and x.egg-info
-    3. Git pull (to make sure all is up to date)
-    4. Get latest release version at github
-    5. Check if the local (current) version is newer then the latest github release.
+
+1. Extract the version from the __init__.py file
+2. Remove old build directories such as dist, build and x.egg-info
+3. Git pull (to make sure all is up to date)
+4. Get latest release version at github
+5. Check if the local (current) version is newer then the latest github release.
 
         a. Make new wheel, build and install package
         b. Set tag to newest version
         c. Push to git
         d. Upload to pypi (credentials for pypi required)
+
 
 ## Contents
 - [Installation](#-installation)
