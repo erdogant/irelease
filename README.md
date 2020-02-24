@@ -51,13 +51,6 @@ Go to the directory where the package is you want to release and simply run rele
 $ release
 ```
 
-### Run irelease by python script
-It is also possible to release the software by running the irelease script. 
-Go to the directory where the package is you want to release and run irelease by:
-```bash
-$ python irelease.py
-```
-
 The following arguments are availble:
 ```bash
 # Github name
@@ -118,12 +111,14 @@ Your package to-be-published must have the correct structure. At least these fil
 </p>
 
 
-* Option 1: Go to your destination dir and run release:
+#### Go to your destination dir and run release:
 ```bash
 $ release
 ```
 
-* Option 2: Create release bash file and run. 
+#### Run irelease by python script
+It is also possible to release the software by running the irelease script. 
+Go to the directory where the package is you want to release and run irelease by:
 ```bash
 $ python
 >>> import irelease
@@ -131,11 +126,7 @@ $ python
 $ release.sh
 ```
 
-* Option 3: Run python file. 
-```bash
-$ bnlearn>python C:\Users\Erdogan\Miniconda3\envs\env_TEST\Lib\site-packages\irelease\irelease.py
-```
-
+#### Run irelease using by bash script
 ```bash
 # Package can be specified:
 $ bnlearn>release -p bnlearn
