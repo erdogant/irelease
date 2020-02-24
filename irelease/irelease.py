@@ -43,7 +43,7 @@ def make_script():
 
 
 # %% def main(username, packagename=None, verbose=3):
-def main(username, packagename, clean=False, twine=None, verbose=3):
+def run(username, packagename, clean=False, twine=None, verbose=3):
     """Make new release on github and pypi.
 
     Description
@@ -357,7 +357,8 @@ def _set_defaults(username, packagename, clean, twine, verbose):
 
 
 # %% Main function
-if __name__ == '__main__':
+# if __name__ == '__main__':
+def main():
     # main
     parser = argparse.ArgumentParser()
     # parser.add_argument("github", type=str, help="github account name")
@@ -369,4 +370,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Go to main
-    main(args.username, args.package, clean=args.clean, twine=args.twine, verbose=args.verbosity)
+    run(args.username, args.package, clean=args.clean, twine=args.twine, verbose=args.verbosity)
