@@ -36,14 +36,24 @@ A new release of your package is created by taking the following steps:
 pip install -r requirements
 pip install irelease
 ```
+
 ### Alternatively, install irelease from the GitHub source:
 ```bash
 git clone https://github.com/erdogant/irelease.git
 cd irelease
 python setup.py install
 ```
-### Arguments or irelease
-Go to the directory where the package is you want to release and run irelease by: 
+
+
+### Run irelease
+Go to the directory where the package is you want to release and simply run release:
+```bash
+$ release
+```
+
+### Run irelease by python script
+It is also possible to release the software by running the irelease script. 
+Go to the directory where the package is you want to release and run irelease by:
 ```bash
 $ python irelease.py
 ```
@@ -51,15 +61,15 @@ $ python irelease.py
 The following arguments are availble:
 ```bash
 # Github name
-irelease -u <githubname>
+release -u <githubname>
 
 # Package name your want to release
-irelease -p <packagename>
+release -p <packagename>
 
 # Removing local builds:
 # 1: Yes
 # 0: No
-irelease -c 1
+release -c 1
 
 # Verbosity messages:
 # 0: No messages
@@ -68,10 +78,10 @@ irelease -c 1
 # 3: Regular messages and above
 # 4: Debug and above
 # 5: Trace and above
-irelease -v 5
+release -v 5
 
 # Twine path for to irelease at pypi. This is automatically determined if standard installation is performed.
-irelease -t 'C://Users/erdogant/AppData/Roaming/Python/Python36/Scripts/twine.exe'
+release -t 'C://Users/erdogant/AppData/Roaming/Python/Python36/Scripts/twine.exe'
 ```
 
 ### Example:
@@ -90,24 +100,6 @@ Your package to-be-published must have the correct structure. At least these fil
     └── ...
 ```
 
-* To release your package you can generate a release.py and bash file and run it.
-1. Go into your package directory
-2. start ptyhon
-3. Import irelease, run irelease.make_script()
-4. A new file (release.sh and release.py) is created in your package directory.
-5. Run it one of them to release your package.
-
-```python
-import irelease
-irelease.make_script()
-exit()
-```
-```bash
-python release.py
-```
-```bash
-release.sh
-```
 
 ### Example: releasing bnlearn package.
 ```bash
@@ -125,7 +117,13 @@ release.sh
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig1.png" width="500" />
 </p>
 
-* Option 1: Create release bash file and run. 
+
+* Option 1: Go to your destination dir and run release:
+```bash
+$ release
+```
+
+* Option 2: Create release bash file and run. 
 ```bash
 $ python
 >>> import irelease
@@ -133,20 +131,20 @@ $ python
 $ release.sh
 ```
 
-* Option 2: Run python file. 
+* Option 3: Run python file. 
 ```bash
 $ bnlearn>python C:\Users\Erdogan\Miniconda3\envs\env_TEST\Lib\site-packages\irelease\irelease.py
 ```
 
 ```bash
 # Package can be specified:
-$ \bnlearn>python irelease -p bnlearn
+$ bnlearn>release -p bnlearn
 
 # Username can be specified:
-$ bnlearn>python irelease.py -u erdogant
+$ bnlearn>release -u erdogant
 
 # Cleaning of previous builds in directory can be disabled
-$ bnlearn>python irelease.py -c 0
+$ bnlearn>release -c 0
 ```
 <p align="left">
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig2.png" width="600" />
@@ -157,6 +155,7 @@ You need to do one final edit on github:
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig3.png" width="600" />
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig4.png" width="600" />
 </p>
+
 
 ### Citation
 Please cite irelease in your publications if this is useful for your research. Here is an example BibTeX entry:
