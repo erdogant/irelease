@@ -119,6 +119,18 @@ Your package to-be-published must have the correct structure. At least these fil
 $ release
 ```
 
+**release with your specified arguments:
+```bash
+# Package can be specified:
+$ bnlearn>release -p bnlearn
+
+# Username can be specified:
+$ bnlearn>release -u erdogant
+
+# Cleaning of previous builds in directory can be disabled
+$ bnlearn>release -c 0
+```
+
 <p align="left">
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig2.png" width="600" />
 </p>
@@ -131,20 +143,9 @@ Go to the directory where the package is you want to release and run irelease by
 $ python
 >>> import irelease
 >>> irelease.make_script()
-$ release.sh
+$ python release.py
 ```
 
-#### Run irelease using by bash script
-```bash
-# Package can be specified:
-$ bnlearn>release -p bnlearn
-
-# Username can be specified:
-$ bnlearn>release -u erdogant
-
-# Cleaning of previous builds in directory can be disabled
-$ bnlearn>release -c 0
-```
 <p align="left">
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig2b.png" width="600" />
 </p>
