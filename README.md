@@ -119,7 +119,7 @@ Your package to-be-published must have the correct structure. At least these fil
 $ release
 ```
 
-**release with your specified arguments:
+**release with your specified arguments**
 ```bash
 # Package can be specified:
 $ bnlearn>release -p bnlearn
