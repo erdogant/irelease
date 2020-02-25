@@ -119,6 +119,11 @@ Your package to-be-published must have the correct structure. At least these fil
 $ release
 ```
 
+<p align="left">
+  <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig2.png" width="600" />
+</p>
+
+
 #### Run irelease by python script
 It is also possible to release the software by running the irelease script. 
 Go to the directory where the package is you want to release and run irelease by:
@@ -141,7 +146,7 @@ $ bnlearn>release -u erdogant
 $ bnlearn>release -c 0
 ```
 <p align="left">
-  <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig2.png" width="600" />
+  <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig2b.png" width="600" />
 </p>
 
 You need to do one final edit on github:
