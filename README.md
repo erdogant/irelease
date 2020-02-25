@@ -150,7 +150,7 @@ $ python release.py
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig2b.png" width="600" />
 </p>
 
-#### Do not forget to enter some release information on github and mark your release number:
+### Do not forget to enter some release information on github and mark your release number:
 <p align="left">
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig3.png" width="600" />
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig4.png" width="600" />
