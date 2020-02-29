@@ -36,7 +36,6 @@ A new release of your package is created by taking the following steps:
 
 ### Quick Start
 ```bash
-pip install -r requirements
 pip install irelease
 ```
 
