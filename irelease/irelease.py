@@ -43,7 +43,7 @@ def make_script():
 
 
 # %% def main(username, packagename=None, verbose=3):
-def run(username, packagename, clean=False, twine=None, verbose=3):
+def run(username, packagename, clean=False, install=False, twine=None, verbose=3):
     """Make new release on github and pypi.
 
     Description
@@ -84,7 +84,7 @@ def run(username, packagename, clean=False, twine=None, verbose=3):
 
     """
     # Set defaults
-    username, packagename, clean, twine, verbose = _set_defaults(username, packagename, clean, twine, verbose)
+    username, packagename, clean, install, twine, verbose = _set_defaults(username, packagename, clean, install, twine, verbose)
     # Get package name
     packagename = _package_name(packagename, verbose=verbose)
     if packagename is None: raise Exception('[irelease] ERROR: Package directory does not exists.')
@@ -98,7 +98,8 @@ def run(username, packagename, clean=False, twine=None, verbose=3):
         print('----------------------------------')
         print('[irelease] username  : %s' %username)
         print('[irelease] Package   : %s' %packagename)
-        print('[irelease] Cleaning  : %s' %clean)
+        print('[irelease] Install   : %s' %install)
+        print('[irelease] Clean     : %s' %clean)
         print('[irelease] Verbosity : %s' %verbose)
         print('[irelease] init file : %s' %initfile)
 
@@ -133,7 +134,7 @@ def run(username, packagename, clean=False, twine=None, verbose=3):
             if VERSION_OK:
                 if verbose>=3: input("[irelease] Press Enter to make build and release [%s] on github..." %(current_version))
                 # Make build and install
-                _make_build_and_install(packagename, current_version)
+                _make_build_and_install(packagename, current_version, install)
                 # Set tag to github and push
                 _github_set_tag_and_push(current_version, verbose=verbose)
                 # Upload to pypi
@@ -240,7 +241,7 @@ def github_version(username, packagename, verbose=3):
     return github_version
 
 
-def _make_build_and_install(packagename, current_version):
+def _make_build_and_install(packagename, current_version, install):
     # Make new build
     print('Making new wheel..')
     os.system('python setup.py bdist_wheel')
@@ -248,8 +249,9 @@ def _make_build_and_install(packagename, current_version):
     print('Making source build..')
     os.system('python setup.py sdist')
     # Install new wheel
-    print('Installing new wheel..')
-    os.system('pip install -U dist/' + packagename + '-' + current_version + '-py3-none-any.whl')
+    if install:
+        print('Installing new wheel..')
+        os.system('pip install -U dist/' + packagename + '-' + current_version + '-py3-none-any.whl')
 
 
 def _github_set_tag_and_push(current_version, verbose=3):
@@ -300,9 +302,12 @@ def _github_username(verbose=3):
     # Iterate over the lines and search for git@github.com
     for line in gitconfig:
         line = line.replace('\t','')
-        geturl = re.search('git@github.com', line)
-        # If git@github.com detected: exract the username
+        geturl = re.search('git@github.com', line)  # SSH
+        if not geturl:
+            geturl = re.search('https://github.com', line)  # HTTPs
+        # Extract the username
         if geturl:
+            # exract the username
             username_line = line[geturl.end() + 1:(geturl.end() + 20)]
             next_char = re.search('/',username_line)
             username = username_line[:next_char.start()].replace('"','')
@@ -331,29 +336,34 @@ def _github_package(verbose=3):
     return package
 
 
-def _set_defaults(username, packagename, clean, twine, verbose):
+def _set_defaults(username, packagename, clean, install, twine, verbose):
     # Default verbosity value is 0
     if verbose is None:
         verbose=3
 
-    if clean is None or clean==1:
+    if (clean is None) or (clean==1) or (clean is True):
         clean=True
     else:
         clean=False
 
-    if twine is None:
+    if (install==1) or (install is True):
+        install=True
+    else:
+        install=False
+
+    if (twine is None):
         twine = ''
         if platform.system().lower()=='windows':
             twine = os.environ['TWIN.EXE']
             # TWINE_PATH = 'C://Users/<USER>/AppData/Roaming/Python/Python36/Scripts/twine.exe'
 
-    if username is None:
+    if (username is None):
         username = _github_username(verbose=verbose)
 
-    if packagename is None:
+    if (packagename is None):
         packagename = _github_package(verbose=verbose)
 
-    return username, packagename, clean, twine, verbose
+    return username, packagename, clean, install, twine, verbose
 
 
 # %% Main function
@@ -363,8 +373,9 @@ def main():
     parser = argparse.ArgumentParser()
     # parser.add_argument("github", type=str, help="github account name")
     parser.add_argument("-u", "--username", type=str, help="username github.")
-    parser.add_argument("-p", "--package", type=str, help="Dir of the package to be released.")
+    parser.add_argument("-p", "--package", type=str, help="package name to be released.")
     parser.add_argument("-c", "--clean", type=int, choices=[0, 1], help="Remove local builds: [dist], [build] and [x.egg-info] before creating new ones.")
+    parser.add_argument("-i", "--install", type=int, choices=[0, 1], help="Install new local versions.")
     parser.add_argument("-v", "--verbosity", type=int, choices=[0, 1, 2, 3, 4, 5], help="Output verbosity, higher number tends to more information.")
     parser.add_argument("-t", "--twine", type=str, help="Path to twine that is used to upload to pypi.")
     args = parser.parse_args()
