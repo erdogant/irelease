@@ -94,8 +94,11 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
     initfile = os.path.join(packagename, "__init__.py")
 
     if verbose>=3:
-        os.system('cls')
-        print('==================================================================')
+        if  _get_platform()=='windows':
+            os.system('cls')
+        else:
+            os.system('clear')
+        print('----------------------------------')
         print('[irelease] username  : %s' %username)
         print('[irelease] Package   : %s' %packagename)
         print('[irelease] Install   : %s' %install)
@@ -235,6 +238,18 @@ def _make_clean(packagename, verbose=3):
     if os.path.isdir('dist'): shutil.rmtree('dist')
     if os.path.isdir('build'): shutil.rmtree('build')
     if os.path.isdir(packagename + '.egg-info'): shutil.rmtree(packagename + '.egg-info')
+
+
+def _get_platform():
+    platforms = {
+        'linux1':'linux',
+        'linux2':'linux',
+        'darwin':'osx',
+        'win32':'windows'
+    }
+    if sys.platform not in platforms:
+        return sys.platform
+    return platforms[sys.platform]
 
 
 def _package_name(packagename, verbose=3):
