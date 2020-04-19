@@ -352,9 +352,8 @@ def _set_defaults(username, packagename, clean, install, twine, verbose):
         install=False
 
     if (twine is None):
-        twine = ''
         if platform.system().lower()=='windows':
-            twine = os.environ['TWIN.EXE']
+            twine = os.environ.get('TWIN', None)
             # TWINE_PATH = 'C://Users/<USER>/AppData/Roaming/Python/Python36/Scripts/twine.exe'
 
     if (username is None):
