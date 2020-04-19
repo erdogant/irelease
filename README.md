@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/irelease)](https://img.shields.io/pypi/pyversions/irelease)
 [![PyPI Version](https://img.shields.io/pypi/v/irelease)](https://pypi.org/project/irelease/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/irelease/blob/master/LICENSE)
-[![Downloads](https://pepy.tech/badge/irelease/week)](https://pepy.tech/project/irelease/week)
+[![Downloads](https://pepy.tech/badge/irelease/month)](https://pepy.tech/project/irelease/month)
 [![Donate Bitcoin](https://img.shields.io/badge/donate-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)
 
 * irelease is Python package that will help to release your python package on both github and pypi.
@@ -48,7 +48,7 @@ python setup.py install
 
 
 ### Run irelease
-Go to the directory where the package is you want to release and simply run release:
+Go to the directory where the package is you want to release and simply run ``release``:
 ```bash
 $ release
 ```
