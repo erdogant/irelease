@@ -10,7 +10,7 @@
 import sys
 import os
 import re
-import platform
+# import platform
 import argparse
 import numpy as np
 import urllib.request
@@ -99,13 +99,13 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
             os.system('cls')
         else:
             os.system('clear')
-        print('----------------------------------')
+        print('[irelease] ==================================================================')
         print('[irelease] username  : %s' %username)
         print('[irelease] Package   : %s' %packagename)
         print('[irelease] Install   : %s' %install)
         print('[irelease] Clean     : %s' %clean)
         print('[irelease] init file : %s' %initfile)
-        print('==================================================================')
+        print('[irelease] ==================================================================')
 
     if os.path.isfile(initfile):
         # Extract version from __init__.py
@@ -119,7 +119,7 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
 
     if verbose>=3:
         input("[irelease] Press [Enter] to exit.")
-        print('==================================================================')
+        print('[irelease] ==================================================================')
 
 
 # %% Final message
@@ -376,7 +376,7 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
     if VERSION_OK:
         if verbose>=3:
             input("[irelease] Press [Enter] to make build and release [%s] on github..." %(current_version))
-            print('==================================================================')
+            print('[irelease] ==================================================================')
         # Make build and install
         _make_build_and_install(packagename, current_version, install)
         # Set tag to github and push
@@ -394,7 +394,7 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
 
 def _upload_to_pypi(twine, verbose=3):
     if verbose>=3:
-        print('==================================================================')
+        print('[irelease] ==================================================================')
         input("[irelease] Press [Enter] to upload to pypi...")
     bashCommand=''
     if twine is None:
