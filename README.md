@@ -48,7 +48,7 @@ python setup.py install
 
 
 ### Run irelease
-Go to the directory where the package is you want to release and simply run release:
+Go to the directory where the package is you want to release and simply run ``release``:
 ```bash
 $ release
 ```
