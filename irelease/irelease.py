@@ -7,6 +7,7 @@
 # Licence     : MIT
 # --------------------------------------------------
 
+import sys
 import os
 import re
 import platform
@@ -94,7 +95,7 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
     initfile = os.path.join(packagename, "__init__.py")
 
     if verbose>=3:
-        if  _get_platform()=='windows':
+        if _get_platform()=='windows':
             os.system('cls')
         else:
             os.system('clear')
@@ -242,10 +243,10 @@ def _make_clean(packagename, verbose=3):
 
 def _get_platform():
     platforms = {
-        'linux1':'linux',
-        'linux2':'linux',
-        'darwin':'osx',
-        'win32':'windows'
+        'linux1': 'linux',
+        'linux2': 'linux',
+        'darwin': 'osx',
+        'win32': 'windows',
     }
     if sys.platform not in platforms:
         return sys.platform
@@ -329,7 +330,7 @@ def _set_defaults(username, packagename, clean, install, twine, verbose):
         install=False
 
     if (twine is None):
-        if platform.system().lower()=='windows':
+        if _get_platform()=='windows':
             twine = os.environ.get('TWIN', None)
             # TWINE_PATH = 'C://Users/<USER>/AppData/Roaming/Python/Python36/Scripts/twine.exe'
 
