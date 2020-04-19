@@ -95,86 +95,47 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
 
     if verbose>=3:
         os.system('cls')
-        print('----------------------------------')
+        print('==================================================================')
         print('[irelease] username  : %s' %username)
         print('[irelease] Package   : %s' %packagename)
         print('[irelease] Install   : %s' %install)
         print('[irelease] Clean     : %s' %clean)
-        print('[irelease] Verbosity : %s' %verbose)
         print('[irelease] init file : %s' %initfile)
+        print('==================================================================')
 
-    # Find version
     if os.path.isfile(initfile):
         # Extract version from __init__.py
-        getversion = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", open(initfile, "rt").read(), re.M)
+        getversion = _getversion(initfile)
         if getversion:
-            # Remove build directories
-            if verbose>=3 and clean:
-                input("[irelease] Press [Enter] to clean previous local builds from the package directory..")
-                _make_clean(packagename, verbose=verbose)
-            # Version found, lets move on:
-            current_version = getversion.group(1)
-            # Get latest version of github release
-            githubversion = github_version(username, packagename, verbose=verbose)
-
-            # Print info about the version
-            if githubversion=='0.0.0':
-                if verbose>=3: print("[irelease] Very first release for [%s]" %(packagename))
-                VERSION_OK = True
-            elif githubversion=='9.9.9':
-                if verbose>=3: print("[irelease] %s/%s not available at github." %(username, packagename))
-                VERSION_OK = False
-            elif version.parse(current_version)>version.parse(githubversion):
-                if verbose>=3: print('[irelease] Current local version from github: %s and from __init__.py: %s' %(githubversion, current_version))
-                VERSION_OK = True
-            else:
-                VERSION_OK = False
-
-            # Continue is version is TRUE
-            if VERSION_OK:
-                if verbose>=3: input("[irelease] Press Enter to make build and release [%s] on github..." %(current_version))
-                # Make build and install
-                _make_build_and_install(packagename, current_version, install)
-                # Set tag to github and push
-                _github_set_tag_and_push(current_version, verbose=verbose)
-                # Upload to pypi
-                if os.path.isfile(twine):
-                    if verbose>=3: input("[irelease] Press Enter to upload to pypi...")
-                    twine_line = twine + ' upload dist/*'
-                    if verbose>=3: print('[irelease] %s' %(twine_line))
-                    os.system(twine_line)
-                # Fin message and webbrowser
-                _fin_message(username, packagename, current_version, githubversion, verbose)
-
-            elif (githubversion != '9.9.9') and (githubversion != '0.0.0'):
-                if verbose>=2: print('[irelease] WARNING: Not released! You need to increase your version: [%s]' %(initfile))
-                if verbose>=2: print('[irelease] WARNING: Local version : %s' %(current_version))
-                if verbose>=2: print('[irelease] WARNING: github version: %s' %(githubversion))
-
+            _try_to_release(username, packagename, getversion, initfile, install, clean, twine, verbose)
         else:
             if verbose>=1: print("[irelease] ERROR: Unable to find version string in %s. Make sure that the operators are space seperated eg.: __version__ = '0.1.0'" % (initfile,))
     else:
         if verbose>=2: print('[irelease] Warning: __init__.py File not found: %s' %(initfile))
 
-    if verbose>=3: input("[irelease] Press [Enter] to exit.")
+    if verbose>=3:
+        input("[irelease] Press [Enter] to exit.")
+        print('==================================================================')
 
 
 # %% Final message
 def _fin_message(username, packagename, current_version, githubversion, verbose):
-    if verbose>=2: print('[irelease] ==================================================================')
-    if verbose>=2: print('[irelease] FIN!')
-    if verbose>=2: print('[irelease] >  But you still need to do one more thing.')
-    if verbose>=2: print('[irelease] 1. Go to your github most recent releases.')
-    if verbose>=2: print('[irelease] 2. Press [edit tag]')
-    if verbose>=2: print('[irelease] 3. Set version in [Release title] to: %s' %(current_version))
-    if verbose>=2: print('[irelease] ==================================================================')
+    if verbose>=2:
+        print('[irelease] ==================================================================')
+        print('[irelease] >  Almost done but one manual action is required:')
+        print('[irelease] 1. Go to your github most recent releases.')
+        print('[irelease] 2. Press [edit tag]')
+        print('[irelease] 3. Set version in [Release title] to: %s' %(current_version))
+        print('[irelease] 4. Fin!')
+        print('[irelease] ==================================================================')
 
     # Open webbroswer and navigate to github to add version
     if verbose>=3: input("[irelease] Press Enter to navigate...")
     git_release_link = 'https://github.com/' + username + '/' + packagename + '/releases/tag/' + current_version
     webbrowser.open(git_release_link, new=2)
-    if verbose>=2: print('[irelease] %s' %(git_release_link))
-    if verbose>=2: print('[irelease] ==================================================================')
+    if verbose>=2:
+        print('[irelease] %s' %(git_release_link))
+        print('[irelease] ==================================================================')
 
 
 # %% Get latest github version
@@ -365,9 +326,84 @@ def _set_defaults(username, packagename, clean, install, twine, verbose):
     return username, packagename, clean, install, twine, verbose
 
 
+def _getversion(initfile):
+    # Check version
+    return re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", open(initfile, "rt").read(), re.M)
+
+
+# %% try to Release
+def _try_to_release(username, packagename, getversion, initfile, install, clean, twine, verbose):
+    # Remove build directories
+    if verbose>=3 and clean:
+        input("[irelease] Press [Enter] to clean previous local builds from the package directory..")
+        _make_clean(packagename, verbose=verbose)
+    # Version found, lets move on:
+    current_version = getversion.group(1)
+    # Get latest version of github release
+    githubversion = github_version(username, packagename, verbose=verbose)
+
+    # Print info about the version
+    if githubversion=='0.0.0':
+        if verbose>=3: print("[irelease] Very first release for [%s]" %(packagename))
+        VERSION_OK = True
+    elif githubversion=='9.9.9':
+        if verbose>=3: print("[irelease] %s/%s not available at github." %(username, packagename))
+        VERSION_OK = False
+    elif version.parse(current_version)>version.parse(githubversion):
+        if verbose>=3: print('[irelease] Current local version from github: %s and from __init__.py: %s' %(githubversion, current_version))
+        VERSION_OK = True
+    else:
+        VERSION_OK = False
+
+    # Continue is version is TRUE
+    if VERSION_OK:
+        if verbose>=3:
+            input("[irelease] Press [Enter] to make build and release [%s] on github..." %(current_version))
+            print('==================================================================')
+        # Make build and install
+        _make_build_and_install(packagename, current_version, install)
+        # Set tag to github and push
+        _github_set_tag_and_push(current_version, verbose=verbose)
+        # Upload to pypi
+        _upload_to_pypi(twine, verbose=verbose)
+        # Fin message and webbrowser
+        _fin_message(username, packagename, current_version, githubversion, verbose)
+    elif (githubversion != '9.9.9') and (githubversion != '0.0.0'):
+        if verbose>=2:
+            print('[irelease] WARNING: Not released! You need to increase your version: [%s]' %(initfile))
+            print('[irelease] WARNING: Local version : %s' %(current_version))
+            print('[irelease] WARNING: github version: %s' %(githubversion))
+
+
+def _upload_to_pypi(twine, verbose=3):
+    if verbose>=3:
+        print('==================================================================')
+        input("[irelease] Press [Enter] to upload to pypi...")
+    bashCommand=''
+    if twine is None:
+        bashCommand = "twine" + ' upload dist/*'
+    elif os.path.isfile(twine):
+        bashCommand = twine + ' upload dist/*'
+
+    if verbose>=3: print('[irelease] %s' %(bashCommand))
+    try:
+        os.system(bashCommand)
+        # import subprocess
+        # process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+        # output, error = process.communicate()
+    except:
+        pass
+
+
 # %% Main function
-# if __name__ == '__main__':
 def main():
+    """Run the Main function.
+
+    Returns
+    -------
+    None.
+
+    """
     # main
     parser = argparse.ArgumentParser()
     # parser.add_argument("github", type=str, help="github account name")
@@ -376,7 +412,7 @@ def main():
     parser.add_argument("-c", "--clean", type=int, choices=[0, 1], help="Remove local builds: [dist], [build] and [x.egg-info] before creating new ones.")
     parser.add_argument("-i", "--install", type=int, choices=[0, 1], help="Install new local versions.")
     parser.add_argument("-v", "--verbosity", type=int, choices=[0, 1, 2, 3, 4, 5], help="Output verbosity, higher number tends to more information.")
-    parser.add_argument("-t", "--twine", type=str, help="Path to twine that is used to upload to pypi.")
+    parser.add_argument("-t", "--twine", type=str, help="Path to twine that will allow uploading the package to pypi.")
     args = parser.parse_args()
 
     # Go to main
