@@ -375,8 +375,7 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
     # Continue is version is TRUE
     if VERSION_OK:
         if verbose>=3:
-            input("[irelease] Press [Enter] to make build and release [%s] on github..." %(current_version))
-            print('[irelease] ==================================================================')
+            input("[irelease] Press [Enter] to make build and release [%s] on github...\n[irelease] ==================================================================" %(current_version))
         # Make build and install
         _make_build_and_install(packagename, current_version, install)
         # Set tag to github and push
