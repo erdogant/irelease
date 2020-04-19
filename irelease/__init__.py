@@ -20,14 +20,7 @@ Example
 
 # install irelease:
 >>> pip install irelease
+>>> # Go to your package directory
 >>> release
-
-# Alternatively: start Python:
->>> import irelease
->>> irelease.make_script()
-
-# In your terminal:
-$ python release.py
-$ release.sh
 
 """
