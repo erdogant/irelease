@@ -16,7 +16,7 @@ import urllib.request
 import shutil
 from packaging import version
 import webbrowser
-EXCLUDE_DIR = np.array(['depricated','__pycache__','_version','.git','.gitignore','build','dist','doc','docs'])
+EXCLUDE_DIR = np.array(['depricated', '__pycache__', '_version', '.git', '.gitignore', 'build', 'dist', 'doc', 'docs'])
 
 
 # %% Make executable:
@@ -180,7 +180,6 @@ def github_version(username, packagename, verbose=3):
         # Tag with 0.0.0 to indicate that this is a very first tag
         github_version = '0.0.0'
     else:
-        # exists
         try:
             # Get the latest release
             github_url = 'https://api.github.com/repos/' + username + '/' + packagename + '/releases/latest'
@@ -190,7 +189,7 @@ def github_version(username, packagename, verbose=3):
             # github_version = yaml.load(github_page)['tag_name']
             tag_ver = github_page[tag_name.end() + 1:(tag_name.end() + 20)]
             next_char = re.search(',', tag_ver)
-            github_version = tag_ver[:next_char.start()].replace('"','')
+            github_version = tag_ver[:next_char.start()].replace('"', '')
         except:
             if verbose>=1:
                 print('[irelease] ERROR: Can not find the latest github version!')
@@ -202,6 +201,7 @@ def github_version(username, packagename, verbose=3):
     return github_version
 
 
+# %% Helper functions
 def _make_build_and_install(packagename, current_version, install):
     # Make new build
     print('Making new wheel..')
@@ -253,8 +253,8 @@ def _package_name(packagename, verbose=3):
     return(packagename)
 
 
-# %% Extract github username from config file
 def _github_username(verbose=3):
+    # Extract github username from config file
     username=None
     if verbose>=4: print('[release.debug] Extracting github name from .git folder')
     # Open github config file
@@ -262,7 +262,7 @@ def _github_username(verbose=3):
     gitconfig = f.readlines()
     # Iterate over the lines and search for git@github.com
     for line in gitconfig:
-        line = line.replace('\t','')
+        line = line.replace('\t', '')
         geturl = re.search('git@github.com', line)  # SSH
         if not geturl:
             geturl = re.search('https://github.com', line)  # HTTPs
@@ -270,14 +270,14 @@ def _github_username(verbose=3):
         if geturl:
             # exract the username
             username_line = line[geturl.end() + 1:(geturl.end() + 20)]
-            next_char = re.search('/',username_line)
-            username = username_line[:next_char.start()].replace('"','')
+            next_char = re.search('/', username_line)
+            username = username_line[:next_char.start()].replace('"', '')
 
     return username
 
 
-# %% Extract github username from config file
 def _github_package(verbose=3):
+    # Extract github username from config file
     package = None
     if verbose>=4: print('[release.debug] Extracting package name from .git folder')
     # Open github config file
@@ -285,19 +285,20 @@ def _github_package(verbose=3):
     gitconfig = f.readlines()
     # Iterate over the lines and search for git@github.com
     for line in gitconfig:
-        line = line.replace('\t','')
+        line = line.replace('\t', '')
         geturl = re.search('git@github.com', line)
         # If git@github.com detected: exract the package
         if geturl:
             repo_line = line[geturl.end():]
-            start_pos = re.search('/',repo_line)
-            stop_pos = re.search('.git',repo_line)
-            package = repo_line[start_pos.end():stop_pos.start()].replace('"','')
+            start_pos = re.search('/', repo_line)
+            stop_pos = re.search('.git', repo_line)
+            package = repo_line[start_pos.end():stop_pos.start()].replace('"', '')
 
     return package
 
 
 def _set_defaults(username, packagename, clean, install, twine, verbose):
+    # Defaults
     # Default verbosity value is 0
     if verbose is None:
         verbose=3

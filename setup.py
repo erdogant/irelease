@@ -20,7 +20,7 @@ setuptools.setup(
      version=new_version,
      author="Erdogan Taskesen",
      author_email="erdogant@gmail.com",
-     description="Python package irelease",
+     description="irelease is an Python package to release your package.",
      long_description=long_description,
      long_description_content_type="text/markdown",
      url="https://github.com/erdogant/irelease",
