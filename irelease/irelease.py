@@ -80,6 +80,7 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
 
     References
     ----------
+    * https:https://github.com/erdogant/irelease
     * https://dzone.com/articles/executable-package-pip-install
     * https://blog.ionelmc.ro/presentations/packaging/#slide:8
 
@@ -99,13 +100,13 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
             os.system('cls')
         else:
             os.system('clear')
-        print('[irelease] ==================================================================')
+        print('[irelease] =============================================================================')
         print('[irelease] username  : %s' %username)
         print('[irelease] Package   : %s' %packagename)
         print('[irelease] Install   : %s' %install)
         print('[irelease] Clean     : %s' %clean)
         print('[irelease] init file : %s' %initfile)
-        print('[irelease] ==================================================================')
+        print('[irelease] =============================================================================')
 
     if os.path.isfile(initfile):
         # Extract version from __init__.py
@@ -119,27 +120,27 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
 
     if verbose>=3:
         input("[irelease] Press [Enter] to exit.")
-        print('[irelease] ==================================================================')
+        print('[irelease] =============================================================================')
 
 
 # %% Final message
 def _fin_message(username, packagename, current_version, githubversion, verbose):
     if verbose>=2:
-        print('[irelease] ==================================================================')
+        print('[irelease] =============================================================================')
         print('[irelease] >  Almost done but one manual action is required:')
         print('[irelease] 1. Go to your github most recent releases.')
         print('[irelease] 2. Press [edit tag]')
         print('[irelease] 3. Set version in [Release title] to: %s' %(current_version))
         print('[irelease] 4. Fin!')
-        print('[irelease] ==================================================================')
+        print('[irelease] =============================================================================')
 
     # Open webbroswer and navigate to github to add version
-    if verbose>=3: input("[irelease] Press Enter to navigate...")
+    if verbose>=3: input("[irelease] Press [Enter] to navigate...")
     git_release_link = 'https://github.com/' + username + '/' + packagename + '/releases/tag/' + current_version
     webbrowser.open(git_release_link, new=2)
     if verbose>=2:
         print('[irelease] %s' %(git_release_link))
-        print('[irelease] ==================================================================')
+        print('[irelease] =============================================================================')
 
 
 # %% Get latest github version
@@ -371,12 +372,23 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
         VERSION_OK = True
     else:
         VERSION_OK = False
+    
+    if (not VERSION_OK) and (githubversion != '9.9.9') and (githubversion != '0.0.0'):
+        if verbose>=2:
+            print('[irelease] WARNING: You may need to increase your version: [%s]' %(initfile))
+            print('[irelease] WARNING: Local version : %s' %(current_version))
+            print('[irelease] WARNING: github version: %s' %(githubversion))
+
+    # Provide option to continue with the release
+    print('[irelease] =============================================================================')
+    user_input = input("[irelease] Type [Q] to Quit and [Enter] to release [%s] on github and Pypi.\n[irelease] =============================================================================" %(current_version))
 
     # Continue is version is TRUE
-    if VERSION_OK:
-        if verbose>=3:
-            print('[irelease] ==================================================================')
-            input("[irelease] Press [Enter] to make build and release [%s] on github...\n[irelease] ==================================================================" %(current_version))
+    if user_input=='': 
+    # if VERSION_OK:
+        # if verbose>=3:
+            # print('[irelease] =============================================================================')
+            # input("[irelease] Press [Enter] to make build and release [%s] on github...\n[irelease] =============================================================================" %(current_version))
         # Make build and install
         _make_build_and_install(packagename, current_version, install)
         # Set tag to github and push
@@ -385,16 +397,16 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
         _upload_to_pypi(twine, verbose=verbose)
         # Fin message and webbrowser
         _fin_message(username, packagename, current_version, githubversion, verbose)
-    elif (githubversion != '9.9.9') and (githubversion != '0.0.0'):
-        if verbose>=2:
-            print('[irelease] WARNING: Not released! You need to increase your version: [%s]' %(initfile))
-            print('[irelease] WARNING: Local version : %s' %(current_version))
-            print('[irelease] WARNING: github version: %s' %(githubversion))
+    # elif (githubversion != '9.9.9') and (githubversion != '0.0.0'):
+        # if verbose>=2:
+            # print('[irelease] WARNING: Not released! You need to increase your version: [%s]' %(initfile))
+            # print('[irelease] WARNING: Local version : %s' %(current_version))
+            # print('[irelease] WARNING: github version: %s' %(githubversion))
 
 
 def _upload_to_pypi(twine, verbose=3):
     if verbose>=3:
-        print('[irelease] ==================================================================')
+        print('[irelease] =============================================================================')
         input("[irelease] Press [Enter] to upload to pypi...")
     bashCommand=''
     if twine is None:
