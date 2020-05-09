@@ -161,6 +161,6 @@ Please cite irelease in your publications if this is useful for your research. H
 * https://github.com/erdogant/irelease
 
 ### Maintainer
-	Erdogan Taskesen, github: [erdogant](https://github.com/erdogant)
-	Contributions are welcome.
-	This work is created and maintained in my free time. If you wish to buy me a <a href="https://erdogant.github.io/donate/?currency=USD&amount=5">Coffee</a> for this work, it is very appreciated.
+Erdogan Taskesen, github: [erdogant](https://github.com/erdogant)
+Contributions are welcome.
+This work is created and maintained in my free time. If you wish to buy me a <a href="https://erdogant.github.io/donate/?currency=USD&amount=5">Coffee</a> for this work, it is very appreciated.
