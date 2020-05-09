@@ -4,7 +4,8 @@
 [![PyPI Version](https://img.shields.io/pypi/v/irelease)](https://pypi.org/project/irelease/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/irelease/blob/master/LICENSE)
 [![Downloads](https://pepy.tech/badge/irelease/month)](https://pepy.tech/project/irelease/month)
-[![Donate Bitcoin](https://img.shields.io/badge/donate-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)
+
+**Star it if you like it!**
 
 * irelease is Python package that will help to release your python package on both github and pypi.
 A new release of your package is created by taking the following steps:
@@ -50,21 +51,21 @@ python setup.py install
 ### Run irelease
 Go to the directory where the package is you want to release and simply run ``release``:
 ```bash
-$ release
+$ pyrelease
 ```
 
 The following arguments are availble:
 ```bash
 # Github name
-release -u <githubname>
+pyrelease -u <githubname>
 
 # Package name your want to release
-release -p <packagename>
+pyrelease -p <packagename>
 
 # Removing local builds:
 # 1: Yes
 # 0: No
-release -c 1
+pyrelease -c 1
 
 # Verbosity messages:
 # 0: No messages
@@ -73,10 +74,10 @@ release -c 1
 # 3: Regular messages and above
 # 4: Debug and above
 # 5: Trace and above
-release -v 5
+pyrelease -v 5
 
 # Twine path for to irelease at pypi. This is automatically determined if standard installation is performed.
-release -t 'C://Users/erdogant/AppData/Roaming/Python/Python36/Scripts/twine.exe'
+pyrelease -t 'C://Users/erdogant/AppData/Roaming/Python/Python36/Scripts/twine.exe'
 ```
 
 ### Example:
@@ -115,35 +116,24 @@ Your package to-be-published must have the correct structure. At least these fil
 
 #### Go to your destination dir and run release:
 ```bash
-$ release
+$ pyrelease
 ```
 
 **release with your specified arguments**
 ```bash
 # Package can be specified:
-$ bnlearn>release -p bnlearn
+$ bnlearn>pyrelease -p bnlearn
 
 # Username can be specified:
-$ bnlearn>release -u erdogant
+$ bnlearn>pyrelease -u erdogant
 
 # Cleaning of previous builds in directory can be disabled
-$ bnlearn>release -c 0
+$ bnlearn>pyrelease -c 0
 ```
 
 <p align="left">
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig2.png" width="600" />
 </p>
-
-
-#### Run irelease by python script
-It is also possible to release the software by running the irelease script. 
-Go to the directory where the package is you want to release and run irelease by:
-```bash
-$ python
->>> import irelease
->>> irelease.make_script()
-$ python release.py
-```
 
 <p align="left">
   <img src="https://github.com/erdogant/irelease/blob/master/docs/figs/fig2b.png" width="600" />
@@ -167,11 +157,10 @@ Please cite irelease in your publications if this is useful for your research. H
 }
 ```
 
-#### Maintainers
-* Erdogan Taskesen, github: [erdogant](https://github.com/erdogant)
-#### Contribute
-* Contributions are welcome.
-#### Licence
-See [LICENSE](LICENSE) for details.
-#### Donation
-* This work is created and maintained in my free time. If you wish to buy me a <a href="https://erdogant.github.io/donate/?currency=USD&amount=5">Coffee</a> for this work, it is very appreciated.
+#### References
+* https://github.com/erdogant/irelease
+
+### Maintainer
+	Erdogan Taskesen, github: [erdogant](https://github.com/erdogant)
+	Contributions are welcome.
+	This work is created and maintained in my free time. If you wish to buy me a <a href="https://erdogant.github.io/donate/?currency=USD&amount=5">Coffee</a> for this work, it is very appreciated.

@@ -4,7 +4,7 @@ from irelease.irelease import(
 
 __author__ = 'Erdogan Tasksen'
 __email__ = 'erdogant@gmail.com'
-__version__ = '0.1.11'
+__version__ = '1.0.0'
 
 
 # module level doc-string
@@ -20,7 +20,7 @@ Examples
 >>> # install irelease:
 >>> pip install irelease
 >>> # Go to your package directory
->>> release
+>>> pyrelease
 
 References
 ----------
