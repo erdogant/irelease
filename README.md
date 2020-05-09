@@ -10,7 +10,8 @@
 ## Update!
 release your library by using the command **pyrelease** (instead of release).
 
-* irelease is Python package that will help to release your python package on both github and pypi.
+## Introduction
+irelease is Python package that will help to release your python package on both github and pypi.
 A new release of your package is created by taking the following steps:
 
 1. Extract the version from the __init__.py file
