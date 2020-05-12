@@ -3,7 +3,6 @@
 [![Python](https://img.shields.io/pypi/pyversions/irelease)](https://img.shields.io/pypi/pyversions/irelease)
 [![PyPI Version](https://img.shields.io/pypi/v/irelease)](https://pypi.org/project/irelease/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/irelease/blob/master/LICENSE)
-[![Downloads](https://pepy.tech/badge/irelease/month)](https://pepy.tech/project/irelease/month)
 [![Downloads](https://pepy.tech/badge/irelease)](https://pepy.tech/project/irelease)
 
         Star it if you like it!
