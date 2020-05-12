@@ -4,11 +4,12 @@
 [![PyPI Version](https://img.shields.io/pypi/v/irelease)](https://pypi.org/project/irelease/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/irelease/blob/master/LICENSE)
 [![Downloads](https://pepy.tech/badge/irelease/month)](https://pepy.tech/project/irelease/month)
+[![Downloads](https://pepy.tech/badge/irelease)](https://pepy.tech/project/irelease)
 
-**Star it if you like it!**
+        Star it if you like it!
 
 ## Update!
-release your library by using the command **pyrelease** (instead of release).
+        release your library by using the command **pyrelease** (instead of release).
 
 ## Introduction
 irelease is Python package that will help to release your python package on both github and pypi.
