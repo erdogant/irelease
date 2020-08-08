@@ -12,7 +12,7 @@
 irelease is Python package that will help to release your python package on both github and pypi.
 A new release of your package is created by taking the following steps:
 
-1. Extract the version from the __init__.py file
+1. Extract the version from the *__init__.py* file
 2. Remove old build directories such as dist, build and x.egg-info
 3. Git pull (to make sure all is up to date)
 4. Get latest release version at github
