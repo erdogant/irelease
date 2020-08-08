@@ -6,9 +6,6 @@
 [![Downloads](https://pepy.tech/badge/irelease)](https://pepy.tech/project/irelease)
 [![Downloads](https://pepy.tech/badge/irelease/month)](https://pepy.tech/project/irelease/month)
 
-        Star it if you like it!
-
-## Update!
         release your library by using the command: pyrelease
 
 ## Introduction
