@@ -150,17 +150,6 @@ $ bnlearn>pyrelease -c 0
 </p>
 
 
-### Citation
-Please cite irelease in your publications if this is useful for your research. Here is an example BibTeX entry:
-```BibTeX
-@misc{erdogant2020irelease,
-  title={irelease},
-  author={Erdogan Taskesen},
-  year={2019},
-  howpublished={\url{https://github.com/erdogant/irelease}},
-}
-```
-
 #### References
 * https://github.com/erdogant/irelease
 
