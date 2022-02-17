@@ -5,11 +5,16 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/irelease/blob/master/LICENSE)
 [![Downloads](https://pepy.tech/badge/irelease)](https://pepy.tech/project/irelease)
 [![Downloads](https://pepy.tech/badge/irelease/month)](https://pepy.tech/project/irelease/)
-[![BuyMeCoffee](https://img.shields.io/badge/buymea-coffee-yellow.svg)](https://www.buymeacoffee.com/erdogant)
 [![DOI](https://zenodo.org/badge/237827238.svg)](https://zenodo.org/badge/latestdoi/237827238)
+<!---[![BuyMeCoffee](https://img.shields.io/badge/buymea-coffee-yellow.svg)](https://www.buymeacoffee.com/erdogant)-->
 <!---[![Coffee](https://img.shields.io/badge/coffee-black-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)-->
 
-        release your library by using the command: pyrelease
+
+Release your library by using the command: ``pyrelease``
+
+# 
+**Star this repo if you like it! ⭐️**
+#
 
 ## Introduction
 irelease is Python package that will help to release your python package on both github and pypi.
@@ -27,14 +32,6 @@ A new release of your package is created by taking the following steps:
         d. Upload to pypi (credentials for pypi required)
 
 ---------------
-## Contents
-- [Installation](#-installation)
-- [Requirements](#-Requirements)
-- [Quick Start](#-quick-start)
-- [Contribute](#-contribute)
-- [Citation](#-citation)
-- [Maintainers](#-maintainers)
-- [License](#-copyright)
 
 ### Installation
 * Install irelease from PyPI (recommended). irelease is compatible with Python 3.6+ and runs on Linux, MacOS X and Windows. 
