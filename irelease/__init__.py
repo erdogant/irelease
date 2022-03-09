@@ -4,7 +4,7 @@ from irelease.irelease import(
 
 __author__ = 'Erdogan Tasksen'
 __email__ = 'erdogant@gmail.com'
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 
 # module level doc-string
