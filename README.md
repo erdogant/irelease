@@ -1,4 +1,4 @@
-# irelease
+# irelease - Library that automates releasing your Github python package at Pypi.
 
 [![Python](https://img.shields.io/pypi/pyversions/irelease)](https://img.shields.io/pypi/pyversions/irelease)
 [![PyPI Version](https://img.shields.io/pypi/v/irelease)](https://pypi.org/project/irelease/)
