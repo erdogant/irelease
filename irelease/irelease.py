@@ -17,7 +17,8 @@ import urllib.request
 import shutil
 from packaging import version
 import webbrowser
-EXCLUDE_DIR = np.array(['depricated', '__pycache__', '_version', '.git', '.gitignore', 'build', 'dist', 'doc', 'docs', '.github'])
+IGNORE_DIRS_IN_PACKAGE = np.array([f for f in os.listdir('.') if os.path.isdir(f) and (f[0]=='.' or f[0]=='_')])
+EXCLUDE_DIR = np.unique(np.array(list(IGNORE_DIRS_IN_PACKAGE) + ['build', 'dist', 'doc', 'docs', 'depricated']))
 
 
 # %% Make executable:
