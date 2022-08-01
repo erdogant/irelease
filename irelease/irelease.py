@@ -130,9 +130,10 @@ def _fin_message(username, packagename, current_version, githubversion, verbose)
         print('[irelease] =============================================================================')
         print('[irelease] >  Almost done but one manual action is required:')
         print('[irelease] 1. Go to your github most recent releases.')
-        print('[irelease] 2. Press [edit tag]')
-        print('[irelease] 3. Set version in [Release title] to: %s' %(current_version))
-        print('[irelease] 4. Fin!')
+        print('[irelease] 2. Press botton [Create release from tag]')
+        print('[irelease] 3. Set [Release title]: v%s' %(current_version))
+        print('[irelease] 4. Make a description in the field: [Describe the release]')
+        print('[irelease] 5. Fin!')
         print('[irelease] =============================================================================')
 
     # Open webbroswer and navigate to github to add version
@@ -373,7 +374,7 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
         VERSION_OK = True
     else:
         VERSION_OK = False
-    
+
     if (not VERSION_OK) and (githubversion != '9.9.9') and (githubversion != '0.0.0'):
         if verbose>=2:
             print('[irelease] WARNING: You may need to increase your version: [%s]' %(initfile))
