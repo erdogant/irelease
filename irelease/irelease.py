@@ -78,7 +78,6 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
     -------
     None.
 
-
     References
     ----------
     * https:https://github.com/erdogant/irelease
@@ -87,11 +86,13 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
 
     """
     # Set defaults
-    username, packagename, clean, install, twine, verbose = _set_defaults(username, packagename, clean, install, twine, verbose)
+    username, packagename, clean, install, twine, git, verbose = _set_defaults(username, packagename, clean, install, twine, verbose)
     # Get package name
     packagename = _package_name(packagename, verbose=verbose)
-    if packagename is None: raise Exception('[irelease] ERROR: Package directory does not exists.')
-    if username is None: raise Exception('[irelease] ERROR: Github name does not exists.')
+    # Determine github/gitlab
+
+    if packagename is None: raise Exception('[pyrelease] ERROR: Package directory does not exists.')
+    if username is None: raise Exception('[pyrelease] ERROR: %s name does not exists.' %(git))
 
     # Get init file from the dir of interest
     initfile = os.path.join(packagename, "__init__.py")
@@ -160,14 +161,14 @@ def github_version(username, packagename, verbose=3):
 
     Returns
     -------
-    github_version : String
+    git_version : String
         x.x.x. : Version number of the latest github package.
         0.0.0  : When repo has no tag/release yet.
         9.9.9  : When repo is private or package/user does not exists.
 
     """
     # Pull latest from github
-    print('[irelease] git pull')
+    print('[pyrelease] git pull')
     os.system('git pull')
 
     # Check whether username/repo exists and not private
@@ -177,15 +178,15 @@ def github_version(username, packagename, verbose=3):
         github_page = str(urllib.request.urlopen(github_url).read())
         tag_name = re.search('"tag_name"', github_page)
     except:
-        if verbose>=1: print('[irelease] ERROR: github %s does not exists or is private.' %(github_url))
-        github_version = '9.9.9'
-        return github_version
+        if verbose>=1: print('[pyrelease] ERROR: github %s does not exists or is private.' %(github_url))
+        git_version = '9.9.9'
+        return git_version
 
     # Continue and check whether this is the very first tag/release or a multitude are readily there.
     if tag_name is None:
         if verbose>=4: print('[release.debug] github exists but tags and releases are empty [%s]' %(github_url))
         # Tag with 0.0.0 to indicate that this is a very first tag
-        github_version = '0.0.0'
+        git_version = '0.0.0'
     else:
         try:
             # Get the latest release
@@ -193,19 +194,19 @@ def github_version(username, packagename, verbose=3):
             github_page = str(urllib.request.urlopen(github_url).read())
             tag_name = re.search('"tag_name"', github_page)
             # Find the next tag by the seperation of the comma. Do +20 or so to make sure a very very long version would also be included.
-            # github_version = yaml.load(github_page)['tag_name']
+            # git_version = yaml.load(github_page)['tag_name']
             tag_ver = github_page[tag_name.end() + 1:(tag_name.end() + 20)]
             next_char = re.search(',', tag_ver)
-            github_version = tag_ver[:next_char.start()].replace('"', '')
+            git_version = tag_ver[:next_char.start()].replace('"', '')
         except:
             if verbose>=1:
-                print('[irelease] ERROR: Can not find the latest github version!')
-                print('[irelease] ERROR: Maybe repo Private or does not exists?')
-            github_version = '9.9.9'
+                print('[pyrelease] ERROR: Can not find the latest github version!')
+                print('[pyrelease] ERROR: Maybe repo Private or does not exists?')
+            git_version = '9.9.9'
 
-    if verbose>=4: print('[irelease] Github version: %s' %(github_version))
-    if verbose>=4: print('[irelease] Github version requested from: %s' %(github_url))
-    return github_version
+    if verbose>=4: print('[pyrelease] Github version: %s' %(git_version))
+    if verbose>=4: print('[pyrelease] Github version requested from: %s' %(github_url))
+    return git_version
 
 
 # %% Helper functions
@@ -224,7 +225,7 @@ def _make_build_and_install(packagename, current_version, install):
 
 def _github_set_tag_and_push(current_version, verbose=3):
     # git commit
-    if verbose>=3: print('[irelease] git add->commit->push')
+    if verbose>=3: print('[pyrelease] git add->commit->push')
     os.system('git add .')
     os.system('git commit -m ' + current_version)
     # os.system('git commit -m v' + current_version)
@@ -296,9 +297,12 @@ def _git_username(git, verbose=3):
     # Iterate over the lines and search for git@github.com
     for line in gitconfig:
         line = line.replace('\t', '')
-        geturl = re.search('git@github.com', line)  # SSH
+        geturl = re.search('@' + git + '.com', line)  # SSH
         if not geturl:
-            geturl = re.search('https://github.com', line)  # HTTPs
+            if git =='gitlab':
+                geturl = re.search('https://' + git, line)  # HTTPs
+            elif git =='github':
+                geturl = re.search('https://' + git + '.com', line)  # HTTPs
         # Extract the username
         if geturl:
             # exract the username
@@ -309,23 +313,46 @@ def _git_username(git, verbose=3):
     return username
 
 
-def _github_package(verbose=3):
+# def _package_name(git, verbose=3):
+#     # Extract github username from config file
+#     package = None
+#     if verbose>=4: print('[release.debug] Extracting package name from .git folder')
+#     # Open github config file
+#     f = open('./.git/config')
+#     gitconfig = f.readlines()
+#     # Iterate over the lines and search for git@github.com
+#     for line in gitconfig:
+#         line = line.replace('\t', '')
+#         if git=='github':
+#             geturl = re.search('@github.com', line)
+#         # If git@github.com detected: exract the package
+#         if geturl:
+#             repo_line = line[geturl.end():]
+#             start_pos = re.search('/', repo_line)
+#             stop_pos = re.search('.git', repo_line)
+#             package = repo_line[start_pos.end():stop_pos.start()].replace('"', '')
+
+#     return package
+
+
+def _package_name(git, verbose=3):
     # Extract github username from config file
     package = None
     if verbose>=4: print('[release.debug] Extracting package name from .git folder')
     # Open github config file
-    f = open('./.git/config')
+    f = open('setup.py')
     gitconfig = f.readlines()
     # Iterate over the lines and search for git@github.com
     for line in gitconfig:
         line = line.replace('\t', '')
-        geturl = re.search('git@github.com', line)
-        # If git@github.com detected: exract the package
+        geturl = re.search('name=', line)
+        # If name= detected: exract the package
         if geturl:
-            repo_line = line[geturl.end():]
-            start_pos = re.search('/', repo_line)
-            stop_pos = re.search('.git', repo_line)
-            package = repo_line[start_pos.end():stop_pos.start()].replace('"', '')
+            package = line[geturl.end():]
+            package = package.replace('\n', '')
+            package = package.replace(',', '')
+            package = package.replace("'", '')
+            package = package.replace('"', '')
 
     return package
 
@@ -454,7 +481,7 @@ def main():
     # main
     parser = argparse.ArgumentParser()
     # parser.add_argument("github", type=str, help="github account name")
-    parser.add_argument("-u", "--username", type=str, help="username github.")
+    parser.add_argument("-u", "--username", type=str, help="username github/gitlab.")
     parser.add_argument("-p", "--package", type=str, help="package name to be released.")
     parser.add_argument("-c", "--clean", type=int, choices=[0, 1], help="Remove local builds: [dist], [build] and [x.egg-info] before creating new ones.")
     parser.add_argument("-i", "--install", type=int, choices=[0, 1], help="Install new local versions.")
