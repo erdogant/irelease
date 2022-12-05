@@ -86,7 +86,7 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
 
     """
     # Set defaults
-    username, packagename, clean, install, twine, git, verbose = _set_defaults(username, packagename, clean, install, twine, verbose)
+    username, packagename, clean, install, twine, git, git_pathname, verbose = _set_defaults(username, packagename, clean, install, twine, verbose)
     # Get package name
     packagename = _package_name(packagename, verbose=verbose)
     # Determine github/gitlab
@@ -114,7 +114,7 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
         # Extract version from __init__.py
         getversion = _getversion(initfile)
         if getversion:
-            _try_to_release(username, packagename, getversion, initfile, install, clean, twine, git, verbose)
+            _try_to_release(username, packagename, getversion, initfile, install, clean, twine, git, git_pathname, verbose)
         else:
             if verbose>=1: print("[pyrelease] ERROR: Unable to find version string in %s. Make sure that the operators are space seperated eg.: __version__ = '0.1.0'" % (initfile,))
     else:
@@ -126,7 +126,7 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
 
 
 # %% Final message
-def _fin_message(username, packagename, current_version, git_version, git, verbose):
+def _fin_message(username, packagename, current_version, git_version, git, git_pathname, verbose):
     if verbose>=2:
         print('[pyrelease] =============================================================================')
         print('[pyrelease] >  Almost done but one manual action is required:')
@@ -139,7 +139,10 @@ def _fin_message(username, packagename, current_version, git_version, git, verbo
 
     # Open webbroswer and navigate to git to add version
     if verbose>=3: input("[pyrelease] Press [Enter] to navigate..")
-    git_release_link = 'https://github.com/' + username + '/' + packagename + '/releases/tag/' + current_version
+    if git=='github':
+        git_release_link = 'https://github.com/' + username + '/' + packagename + '/releases/tag/' + current_version
+    elif git=='gitlab':
+        git_release_link = 'https://gitlab.com/' + username + git_pathname + packagename + '/-/tags/' + current_version
     webbrowser.open(git_release_link, new=2)
     if verbose>=2:
         print('[pyrelease] %s' %(git_release_link))
@@ -313,6 +316,27 @@ def _git_username(git, verbose=3):
     return username
 
 
+def _git_pathname(git, username, packagename, verbose=3):
+    # Extract github username from config file
+    git_pathname = ''
+    if verbose>=4: print('[release.debug] Extracting git path from .git folder')
+    # Open github config file
+    f = open('./.git/config')
+    gitconfig = f.readlines()
+    # Iterate over the lines and search for git@github.com
+    for line in gitconfig:
+        line = line.replace('\t', '')
+        geturl = re.search('@' + git + '.com', line)  # SSH
+        # Extract the pathname
+        if geturl:
+            repo_line = line[geturl.end():]
+            start_pos = re.search(username, repo_line)
+            end_pos = re.search(packagename, repo_line)
+            git_pathname = repo_line[start_pos.end():end_pos.start()]
+
+    return git_pathname
+
+
 # def _package_name(git, verbose=3):
 #     # Extract github username from config file
 #     package = None
@@ -386,8 +410,10 @@ def _set_defaults(username, packagename, clean, install, twine, verbose):
     # Get package name
     if (packagename is None):
         packagename = _package_name(git, verbose=verbose)
+    # Pathname
+    git_pathname = _git_pathname(git, username, packagename, verbose=verbose)
 
-    return username, packagename, clean, install, twine, git, verbose
+    return username, packagename, clean, install, twine, git, git_pathname, verbose
 
 
 def _getversion(initfile):
@@ -396,7 +422,7 @@ def _getversion(initfile):
 
 
 # %% try to Release
-def _try_to_release(username, packagename, getversion, initfile, install, clean, twine, git, verbose):
+def _try_to_release(username, packagename, getversion, initfile, install, clean, twine, git, git_pathname, verbose):
     # Remove build directories
     if verbose>=3 and clean:
         input("[pyrelease] Press [Enter] to clean previous local builds from the package directory..")
@@ -445,7 +471,7 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
         # Upload to pypi
         _upload_to_pypi(twine, verbose=verbose)
         # Fin message and webbrowser
-        _fin_message(username, packagename, current_version, git_version, git, verbose)
+        _fin_message(username, packagename, current_version, git_version, git, git_pathname, verbose)
 
 
 # %% Upload to pypi
