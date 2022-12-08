@@ -1,4 +1,4 @@
-"""Make new release on github and pypi."""
+"""Make new release on github and PyPi."""
 # --------------------------------------------------
 # Name        : irelease.py
 # Author      : E.Taskesen
@@ -46,7 +46,7 @@ def make_script():
 
 # %% def main(username, packagename=None, verbose=3):
 def run(username, packagename, clean=False, install=False, twine=None, verbose=3):
-    """Make new release on git and pypi.
+    """Make new release on git and PyPi.
 
     Description
     -----------
@@ -56,10 +56,10 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
         3. Remove old build directories such as dist, build and x.egg-info
         4. Git pull
         5. Get latest version from github/gitlab
-        6. Check if the current version is newer then github lates--version.
+        6. Check if the current version is newer then github latest--version.
             a. Make new wheel, build and install package
             b. Set tag to newest version and push to git
-            c. Upload to pypi (credentials required)
+            c. Upload to PyPi (credentials required)
 
     Parameters
     ----------
@@ -105,6 +105,7 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
         print('[pyrelease] =============================================================================')
         print('[pyrelease] username  : %s' %username)
         print('[pyrelease] Package   : %s' %packagename)
+        print('[pyrelease] Git       : %s' %git)
         print('[pyrelease] Install   : %s' %install)
         print('[pyrelease] Clean     : %s' %clean)
         print('[pyrelease] init file : %s' %initfile)
@@ -215,15 +216,28 @@ def github_version(username, packagename, verbose=3):
 # %% Helper functions
 def _make_build_and_install(packagename, current_version, install):
     # Make new build
-    print('Making new wheel..')
+    print('[pyrelease] =============================================================================')
+    print('[pyrelease] Making new wheel..')
+    print('[pyrelease] =============================================================================')
     os.system('python setup.py bdist_wheel')
     # Make new build
-    print('Making source build..')
+    print('[pyrelease] =============================================================================')
+    print('[pyrelease] Making source build..')
+    print('[pyrelease] =============================================================================')
     os.system('python setup.py sdist')
     # Install new wheel
     if install:
-        print('Installing new wheel..')
-        os.system('pip install -U dist/' + packagename + '-' + current_version + '-py3-none-any.whl')
+        command = 'pip install -U dist/' + packagename + '-' + current_version + '-py3-none-any.whl'
+        print('[pyrelease] =============================================================================')
+        print('[pyrelease] Installing new wheel:\n%s' %(command))
+        print('[pyrelease] =============================================================================')
+        os.system(command)
+    print('[pyrelease] =============================================================================')
+    print("[pyrelease] Distribution archives are created!")
+    print("[pyrelease] Type [Q] to Quit and [Enter] to release on PyPi.")
+    print('[pyrelease] =============================================================================')
+    user_input = input("[pyrelease] > ")
+    return user_input
 
 
 def _github_set_tag_and_push(current_version, verbose=3):
@@ -234,7 +248,7 @@ def _github_set_tag_and_push(current_version, verbose=3):
     # os.system('git commit -m v' + current_version)
     # os.system('git push')
     # Set tag for this version
-    if verbose>=3: print('Set new version tag: %s' %(current_version))
+    if verbose>=3: print('[pyrelease] Set new version tag: %s' %(current_version))
     # git tag -a 0.1.0 -d "0.1.0"
     # os.system('git tag -a v' + current_version + ' -m "v' + current_version + '"')
     os.system('git tag -a ' + current_version + ' -m "' + current_version + '"')
@@ -400,16 +414,18 @@ def _set_defaults(username, packagename, clean, install, twine, verbose):
     if (twine is None):
         if _get_platform()=='windows':
             twine = os.environ.get('TWIN', None)
-            # TWINE_PATH = 'C://Users/<USER>/AppData/Roaming/Python/Python36/Scripts/twine.exe'
 
     # Get github/gitlab
     git = _git_host(verbose=verbose)
+
     # Get username
     if (username is None):
         username = _git_username(git, verbose=verbose)
+
     # Get package name
     if (packagename is None):
         packagename = _package_name(git, verbose=verbose)
+
     # Pathname
     git_pathname = _git_pathname(git, username, packagename, verbose=verbose)
 
@@ -459,38 +475,40 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
 
     # Provide option to continue with the release
     print('[pyrelease] =============================================================================')
-    print("[pyrelease] Type [Q] to Quit and [Enter] to release [%s] on %s and Pypi.\n[pyrelease] =============================================================================" %(current_version, git))
+    print("[pyrelease] Type [Q] to Quit and [Enter] to create the distribution archives.")
+    print('[pyrelease] =============================================================================')
     user_input = input("[pyrelease] > ")
 
     # Continue is version is TRUE
     if user_input=='':
         # Make build and install
-        _make_build_and_install(packagename, current_version, install)
-        # Set tag to github and push
-        _github_set_tag_and_push(current_version, verbose=verbose)
-        # Upload to pypi
-        _upload_to_pypi(twine, verbose=verbose)
-        # Fin message and webbrowser
-        _fin_message(username, packagename, current_version, git_version, git, git_pathname, verbose)
+        user_input = _make_build_and_install(packagename, current_version, install)
+        if user_input=='':
+            # Set tag to github and push
+            _github_set_tag_and_push(current_version, verbose=verbose)
+            # Upload to pypi
+            _upload_to_pypi(twine, verbose=verbose)
+            # Fin message and webbrowser
+            _fin_message(username, packagename, current_version, git_version, git, git_pathname, verbose)
 
 
 # %% Upload to pypi
 def _upload_to_pypi(twine, verbose=3):
+    bashCommand=''
     if verbose>=3:
         print('[pyrelease] =============================================================================')
-        input("[pyrelease] Press [Enter] to upload to pypi..")
-    bashCommand=''
+        print("[pyrelease] Type [Q] to Quit and [Enter] to release on PyPi.")
+        print('[pyrelease] =============================================================================')
+
     if twine is None:
         bashCommand = "twine" + ' upload dist/*'
     elif os.path.isfile(twine):
         bashCommand = twine + ' upload dist/*'
 
     if verbose>=3: print('[pyrelease] %s' %(bashCommand))
+
     try:
         os.system(bashCommand)
-        # import subprocess
-        # process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-        # output, error = process.communicate()
     except:
         pass
 
@@ -507,12 +525,12 @@ def main():
     # main
     parser = argparse.ArgumentParser()
     # parser.add_argument("github", type=str, help="github account name")
-    parser.add_argument("-u", "--username", type=str, help="username github/gitlab.")
-    parser.add_argument("-p", "--package", type=str, help="package name to be released.")
-    parser.add_argument("-c", "--clean", type=int, choices=[0, 1], help="Remove local builds: [dist], [build] and [x.egg-info] before creating new ones.")
-    parser.add_argument("-i", "--install", type=int, choices=[0, 1], help="Install new local versions.")
-    parser.add_argument("-v", "--verbosity", type=int, choices=[0, 1, 2, 3, 4, 5], help="Output verbosity, higher number tends to more information.")
-    parser.add_argument("-t", "--twine", type=str, help="Path to twine that will allow uploading the package to pypi.")
+    parser.add_argument("-u", "--username", type=str, help="Username on Github/Gitlab..")
+    parser.add_argument("-p", "--package", type=str, help="Package name to be released.")
+    parser.add_argument("-c", "--clean", type=int, choices=[0, 1], help="Remove local builds: [dist], [build] and [x.egg-info].")
+    parser.add_argument("-i", "--install", type=int, choices=[0, 1], help="Install this versions on local machine.")
+    parser.add_argument("-t", "--twine", type=str, help="Path to twine in case you have a custom build.")
+    parser.add_argument("-v", "--verbosity", type=int, choices=[0, 1, 2, 3, 4, 5], help="Verbosity, higher number tends to more information.")
     args = parser.parse_args()
 
     # Go to main
