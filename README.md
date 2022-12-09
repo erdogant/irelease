@@ -9,11 +9,11 @@
 [![Downloads](https://pepy.tech/badge/irelease/month)](https://pepy.tech/project/irelease/)
 [![Downloads](https://pepy.tech/badge/irelease)](https://pepy.tech/project/irelease)
 [![DOI](https://zenodo.org/badge/237827238.svg)](https://zenodo.org/badge/latestdoi/237827238)
-[![Docs](https://img.shields.io/badge/Sphinx-Docs-Green)](https://erdogant.github.io/irelease/)
 [![Medium](https://img.shields.io/badge/Medium-Blog-green)](https://erdogant.github.io/irelease/pages/html/Documentation.html#medium-blog)
-![GitHub repo size](https://img.shields.io/github/repo-size/erdogant/irelease)
+[!GitHub repo size](https://img.shields.io/github/repo-size/erdogant/irelease)
 [![Donate](https://img.shields.io/badge/Support%20this%20project-grey.svg?logo=github%20sponsors)](https://erdogant.github.io/irelease/pages/html/Documentation.html#)
-<!---![GitHub Repo stars](https://img.shields.io/github/stars/erdogant/irelease)-->
+<!---[![Docs](https://img.shields.io/badge/Sphinx-Docs-Green)](https://erdogant.github.io/irelease/)
+<!---[!GitHub Repo stars](https://img.shields.io/github/stars/erdogant/irelease)-->
 <!---[![BuyMeCoffee](https://img.shields.io/badge/buymea-coffee-yellow.svg)](https://www.buymeacoffee.com/erdogant)-->
 <!---[![Coffee](https://img.shields.io/badge/coffee-black-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)-->
 
