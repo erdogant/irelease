@@ -135,8 +135,9 @@ def _fin_message(username, packagename, current_version, git_version, git, git_p
             print('[irelease] 1. Go to your %s most recent releases.' %(git))
             print('[irelease] 2. Press botton [Create release from tag]')
             print('[irelease] 3. Set [Release title]: v%s' %(current_version))
-            print('[irelease] 4. Make a description in the field: [Describe the release]')
-            print('[irelease] 5. Fin!')
+            print('[irelease] 4. Make a description in the field: [Create release from Tag]')
+            print('[irelease] 5. Press <Publish release> at the bottom of the page.')
+            print('[irelease] 6. Fin!')
             print('[irelease] =============================================================================')
 
         # Open webbroswer and navigate to git to add version
@@ -205,7 +206,7 @@ def github_version(username, packagename, verbose=3):
             git_version = tag_ver[:next_char.start()].replace('"', '')
         except:
             if verbose>=1:
-                print('[irelease] ERROR: Can not find the latest github version!')
+                print('[irelease] ERROR: Can not find the latest Github version!')
                 print('[irelease] ERROR: Maybe repo Private or does not exists?')
             git_version = '9.9.9'
 
