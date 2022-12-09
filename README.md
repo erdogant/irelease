@@ -2,7 +2,6 @@
 
 [![Python](https://img.shields.io/pypi/pyversions/irelease)](https://img.shields.io/pypi/pyversions/irelease)
 [![PyPI Version](https://img.shields.io/pypi/v/irelease)](https://pypi.org/project/irelease/)
-<!---![GitHub Repo stars](https://img.shields.io/github/stars/erdogant/irelease)-->
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/irelease/blob/master/LICENSE)
 [![Forks](https://img.shields.io/github/forks/erdogant/irelease.svg)](https://github.com/erdogant/irelease/network)
 [![Open Issues](https://img.shields.io/github/issues/erdogant/irelease.svg)](https://github.com/erdogant/irelease/issues)
@@ -15,6 +14,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/erdogant/irelease)
 [![Donate](https://img.shields.io/badge/Support%20this%20project-grey.svg?logo=github%20sponsors)](https://erdogant.github.io/irelease/pages/html/Documentation.html#)
 [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://erdogant.github.io/irelease/pages/html/Documentation.html#colab-notebook)
+<!---![GitHub Repo stars](https://img.shields.io/github/stars/erdogant/irelease)-->
 <!---[![BuyMeCoffee](https://img.shields.io/badge/buymea-coffee-yellow.svg)](https://www.buymeacoffee.com/erdogant)-->
 <!---[![Coffee](https://img.shields.io/badge/coffee-black-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)-->
 
