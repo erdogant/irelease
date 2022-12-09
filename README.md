@@ -8,7 +8,7 @@
 [![Project Status](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![Downloads](https://pepy.tech/badge/irelease/month)](https://pepy.tech/project/irelease/)
 [![Downloads](https://pepy.tech/badge/irelease)](https://pepy.tech/project/irelease)
-[![DOI](https://zenodo.org/badge/231263493.svg)](https://zenodo.org/badge/latestdoi/231263493)
+[![DOI](https://zenodo.org/badge/237827238.svg)](https://zenodo.org/badge/latestdoi/237827238)
 [![Docs](https://img.shields.io/badge/Sphinx-Docs-Green)](https://erdogant.github.io/irelease/)
 [![Medium](https://img.shields.io/badge/Medium-Blog-green)](https://erdogant.github.io/irelease/pages/html/Documentation.html#medium-blog)
 ![GitHub repo size](https://img.shields.io/github/repo-size/erdogant/irelease)
