@@ -3,9 +3,17 @@
 [![Python](https://img.shields.io/pypi/pyversions/irelease)](https://img.shields.io/pypi/pyversions/irelease)
 [![PyPI Version](https://img.shields.io/pypi/v/irelease)](https://pypi.org/project/irelease/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/irelease/blob/master/LICENSE)
-[![Downloads](https://pepy.tech/badge/irelease)](https://pepy.tech/project/irelease)
+[![Forks](https://img.shields.io/github/forks/erdogant/irelease.svg)](https://github.com/erdogant/irelease/network)
+[![Open Issues](https://img.shields.io/github/issues/erdogant/irelease.svg)](https://github.com/erdogant/irelease/issues)
+[![Project Status](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![Downloads](https://pepy.tech/badge/irelease/month)](https://pepy.tech/project/irelease/)
+[![Downloads](https://pepy.tech/badge/irelease)](https://pepy.tech/project/irelease)
 [![DOI](https://zenodo.org/badge/237827238.svg)](https://zenodo.org/badge/latestdoi/237827238)
+[![Medium](https://img.shields.io/badge/Medium-Blog-green)](https://erdogant.github.io/irelease/pages/html/Documentation.html#medium-blog)
+![GitHub repo size](https://img.shields.io/github/repo-size/erdogant/irelease)
+[![Donate](https://img.shields.io/badge/Support%20this%20project-grey.svg?logo=github%20sponsors)](https://erdogant.github.io/irelease/pages/html/Documentation.html#)
+<!---[![Docs](https://img.shields.io/badge/Sphinx-Docs-Green)](https://erdogant.github.io/irelease/)
+<!---[!GitHub Repo stars](https://img.shields.io/github/stars/erdogant/irelease)-->
 <!---[![BuyMeCoffee](https://img.shields.io/badge/buymea-coffee-yellow.svg)](https://www.buymeacoffee.com/erdogant)-->
 <!---[![Coffee](https://img.shields.io/badge/coffee-black-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)-->
 
@@ -26,10 +34,10 @@ A new release of your package is created by taking the following steps:
 4. Get latest release version at github
 5. Check if the local (current) version is newer then the latest github release.
 
-        a. Make new wheel, build and install package
-        b. Set tag to newest version
-        c. Push to git
-        d. Upload to pypi (credentials for pypi required)
+        1. Make new wheel, build and install package
+        2. Set tag to newest version
+        3. Push to git
+        4. Upload to pypi (credentials for pypi required)
 
 ---------------
 
@@ -79,7 +87,7 @@ irelease -c 1
 irelease -v 5
 
 # Twine path for to irelease at pypi. This is automatically determined if standard installation is performed.
-irelease -t 'C://Users/erdogant/AppData/Roaming/Python/Python36/Scripts/twine.exe'
+irelease -t 'C://<username>/AppData/Roaming/Python/Python36/Scripts/twine.exe'
 ```
 
 ### Example:
