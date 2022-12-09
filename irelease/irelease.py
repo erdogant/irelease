@@ -41,7 +41,7 @@ def make_script():
     f.close()
     # Copy irelease script
     shutil.copyfile(release_path, os.path.join(os.getcwd(), 'release.py'))
-    print('[pyrelease] release.sh created and .py file copied!')
+    print('[irelease] release.sh created and .py file copied!')
 
 
 # %% def main(username, packagename=None, verbose=3):
@@ -91,8 +91,8 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
     packagename = _package_name(packagename, verbose=verbose)
     # Determine github/gitlab
 
-    if packagename is None: raise Exception('[pyrelease] ERROR: Package directory does not exists.')
-    if username is None: raise Exception('[pyrelease] ERROR: %s name does not exists.' %(git))
+    if packagename is None: raise Exception('[irelease] ERROR: Package directory does not exists.')
+    if username is None: raise Exception('[irelease] ERROR: %s name does not exists.' %(git))
 
     # Get init file from the dir of interest
     initfile = os.path.join(packagename, "__init__.py")
@@ -102,14 +102,14 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
             os.system('cls')
         else:
             os.system('clear')
-        print('[pyrelease] =============================================================================')
-        print('[pyrelease] username  : %s' %username)
-        print('[pyrelease] Package   : %s' %packagename)
-        print('[pyrelease] Git       : %s' %git)
-        print('[pyrelease] Install   : %s' %install)
-        print('[pyrelease] Clean     : %s' %clean)
-        print('[pyrelease] init file : %s' %initfile)
-        print('[pyrelease] =============================================================================')
+        print('[irelease] =============================================================================')
+        print('[irelease] username  : %s' %username)
+        print('[irelease] Package   : %s' %packagename)
+        print('[irelease] Git       : %s' %git)
+        print('[irelease] Install   : %s' %install)
+        print('[irelease] Clean     : %s' %clean)
+        print('[irelease] init file : %s' %initfile)
+        print('[irelease] =============================================================================')
 
     if os.path.isfile(initfile):
         # Extract version from __init__.py
@@ -117,37 +117,38 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
         if getversion:
             _try_to_release(username, packagename, getversion, initfile, install, clean, twine, git, git_pathname, verbose)
         else:
-            if verbose>=1: print("[pyrelease] ERROR: Unable to find version string in %s. Make sure that the operators are space seperated eg.: __version__ = '0.1.0'" % (initfile,))
+            if verbose>=1: print("[irelease] ERROR: Unable to find version string in %s. Make sure that the operators are space seperated eg.: __version__ = '0.1.0'" % (initfile,))
     else:
-        if verbose>=2: print('[pyrelease] Warning: __init__.py File not found: %s' %(initfile))
+        if verbose>=2: print('[irelease] Warning: __init__.py File not found: %s' %(initfile))
 
     if verbose>=3:
-        input("[pyrelease] Press [Enter] to exit.")
-        print('[pyrelease] =============================================================================')
+        input("[irelease] Press [Enter] to exit.")
+        print('[irelease] =============================================================================')
 
 
 # %% Final message
-def _fin_message(username, packagename, current_version, git_version, git, git_pathname, verbose):
-    if verbose>=2:
-        print('[pyrelease] =============================================================================')
-        print('[pyrelease] >  Almost done but one manual action is required:')
-        print('[pyrelease] 1. Go to your %s most recent releases.' %(git))
-        print('[pyrelease] 2. Press botton [Create release from tag]')
-        print('[pyrelease] 3. Set [Release title]: v%s' %(current_version))
-        print('[pyrelease] 4. Make a description in the field: [Describe the release]')
-        print('[pyrelease] 5. Fin!')
-        print('[pyrelease] =============================================================================')
+def _fin_message(username, packagename, current_version, git_version, git, git_pathname, user_input, verbose):
+    if user_input=='':
+        if verbose>=2:
+            print('[irelease] =============================================================================')
+            print('[irelease] >  Almost done but one manual action is required:')
+            print('[irelease] 1. Go to your %s most recent releases.' %(git))
+            print('[irelease] 2. Press botton [Create release from tag]')
+            print('[irelease] 3. Set [Release title]: v%s' %(current_version))
+            print('[irelease] 4. Make a description in the field: [Describe the release]')
+            print('[irelease] 5. Fin!')
+            print('[irelease] =============================================================================')
 
-    # Open webbroswer and navigate to git to add version
-    if verbose>=3: input("[pyrelease] Press [Enter] to navigate..")
-    if git=='github':
-        git_release_link = 'https://github.com/' + username + '/' + packagename + '/releases/tag/' + current_version
-    elif git=='gitlab':
-        git_release_link = 'https://gitlab.com/' + username + git_pathname + packagename + '/-/tags/' + current_version
-    webbrowser.open(git_release_link, new=2)
-    if verbose>=2:
-        print('[pyrelease] %s' %(git_release_link))
-        print('[pyrelease] =============================================================================')
+        # Open webbroswer and navigate to git to add version
+        if verbose>=3: input("[irelease] Press [Enter] to navigate..")
+        if git=='github':
+            git_release_link = 'https://github.com/' + username + '/' + packagename + '/releases/tag/' + current_version
+        elif git=='gitlab':
+            git_release_link = 'https://gitlab.com/' + username + git_pathname + packagename + '/-/tags/' + current_version
+        webbrowser.open(git_release_link, new=2)
+        if verbose>=2:
+            print('[irelease] %s' %(git_release_link))
+            print('[irelease] =============================================================================')
 
 
 # %% Get latest github/gitlab version
@@ -172,7 +173,7 @@ def github_version(username, packagename, verbose=3):
 
     """
     # Pull latest from github
-    print('[pyrelease] git pull')
+    print('[irelease] git pull')
     os.system('git pull')
 
     # Check whether username/repo exists and not private
@@ -182,7 +183,7 @@ def github_version(username, packagename, verbose=3):
         github_page = str(urllib.request.urlopen(github_url).read())
         tag_name = re.search('"tag_name"', github_page)
     except:
-        if verbose>=1: print('[pyrelease] ERROR: github %s does not exists or is private.' %(github_url))
+        if verbose>=1: print('[irelease] ERROR: github %s does not exists or is private.' %(github_url))
         git_version = '9.9.9'
         return git_version
 
@@ -204,59 +205,73 @@ def github_version(username, packagename, verbose=3):
             git_version = tag_ver[:next_char.start()].replace('"', '')
         except:
             if verbose>=1:
-                print('[pyrelease] ERROR: Can not find the latest github version!')
-                print('[pyrelease] ERROR: Maybe repo Private or does not exists?')
+                print('[irelease] ERROR: Can not find the latest github version!')
+                print('[irelease] ERROR: Maybe repo Private or does not exists?')
             git_version = '9.9.9'
 
-    if verbose>=4: print('[pyrelease] Github version: %s' %(git_version))
-    if verbose>=4: print('[pyrelease] Github version requested from: %s' %(github_url))
+    if verbose>=4: print('[irelease] Github version: %s' %(git_version))
+    if verbose>=4: print('[irelease] Github version requested from: %s' %(github_url))
     return git_version
 
 
 # %% Helper functions
 def _make_build_and_install(packagename, current_version, install):
-    # Make new build
-    print('[pyrelease] =============================================================================')
-    print('[pyrelease] Making new wheel..')
-    print('[pyrelease] =============================================================================')
-    os.system('python setup.py bdist_wheel')
-    # Make new build
-    print('[pyrelease] =============================================================================')
-    print('[pyrelease] Making source build..')
-    print('[pyrelease] =============================================================================')
-    os.system('python setup.py sdist')
-    # Install new wheel
-    if install:
-        command = 'pip install -U dist/' + packagename + '-' + current_version + '-py3-none-any.whl'
-        print('[pyrelease] =============================================================================')
-        print('[pyrelease] Installing new wheel:\n%s' %(command))
-        print('[pyrelease] =============================================================================')
-        os.system(command)
-    print('[pyrelease] =============================================================================')
-    print("[pyrelease] Distribution archives are created!")
-    print("[pyrelease] Type [Q] to Quit and [Enter] to release on PyPi.")
-    print('[pyrelease] =============================================================================')
-    user_input = input("[pyrelease] > ")
+    # Provide option to continue with the release
+    print('[irelease] =============================================================================')
+    print("[irelease] Type [Q] to Quit and [Enter] to create the Distribution Archives.")
+    print('[irelease] =============================================================================')
+    user_input = input("[irelease] > ")
+
+    if user_input=='':
+        # Make new build
+        print('[irelease] =============================================================================')
+        print('[irelease] Making new wheel..')
+        print('[irelease] =============================================================================')
+        os.system('python setup.py bdist_wheel')
+        # Make new build
+        print('[irelease] =============================================================================')
+        print('[irelease] Making source build..')
+        print('[irelease] =============================================================================')
+        os.system('python setup.py sdist')
+        # Install new wheel
+        if install:
+            command = 'pip install -U dist/' + packagename + '-' + current_version + '-py3-none-any.whl'
+            print('[irelease] =============================================================================')
+            print('[irelease] Installing new wheel:\n%s' %(command))
+            print('[irelease] =============================================================================')
+            os.system(command)
+        print('[irelease] =============================================================================')
+        print("[irelease] Distribution archives are created on your local machine!")
+    return user_input
+
+def _github_set_tag_and_push(current_version, user_input, verbose=3):
+    # Push to git and set the Tag.
+    # Only continue if the previous state was not to [Q]uit!
+    if user_input=='':
+        print('[irelease] =============================================================================')
+        print("[irelease] Type [Q] to Quit and [Enter] to push to Git and create tag [%s]." %(current_version))
+        print('[irelease] =============================================================================')
+        user_input = input("[irelease] > ")
+
+        if user_input=='':
+            # git commit
+            if verbose>=3: print('[irelease] git add->commit->push')
+            os.system('git add .')
+            os.system('git commit -m ' + current_version)
+            # os.system('git commit -m v' + current_version)
+            # os.system('git push')
+            # Set tag for this version
+            if verbose>=3: print('[irelease] Set new version tag: %s' %(current_version))
+            # git tag -a 0.1.0 -d "0.1.0"
+            # os.system('git tag -a v' + current_version + ' -m "v' + current_version + '"')
+            os.system('git tag -a ' + current_version + ' -m "' + current_version + '"')
+            os.system('git push origin --tags')
+
     return user_input
 
 
-def _github_set_tag_and_push(current_version, verbose=3):
-    # git commit
-    if verbose>=3: print('[pyrelease] git add->commit->push')
-    os.system('git add .')
-    os.system('git commit -m ' + current_version)
-    # os.system('git commit -m v' + current_version)
-    # os.system('git push')
-    # Set tag for this version
-    if verbose>=3: print('[pyrelease] Set new version tag: %s' %(current_version))
-    # git tag -a 0.1.0 -d "0.1.0"
-    # os.system('git tag -a v' + current_version + ' -m "v' + current_version + '"')
-    os.system('git tag -a ' + current_version + ' -m "' + current_version + '"')
-    os.system('git push origin --tags')
-
-
 def _make_clean(packagename, verbose=3):
-    if verbose>=3: print('[pyrelease] Removing local build directories..')
+    if verbose>=3: print('[irelease] Removing local build directories..')
     if os.path.isdir('dist'): shutil.rmtree('dist')
     if os.path.isdir('build'): shutil.rmtree('build')
     if os.path.isdir(packagename + '.egg-info'): shutil.rmtree(packagename + '.egg-info')
@@ -277,7 +292,7 @@ def _get_platform():
 def _package_name(packagename, verbose=3):
     # Infer name of the package by excluding all known-required-files-and-folders.
     if packagename is None:
-        if verbose>=4: print('[pyrelease] Infer name of the package from the directory..')
+        if verbose>=4: print('[irelease] Infer name of the package from the directory..')
         # List all folders in dir
         filesindir = np.array(os.listdir())
         getdirs = filesindir[list(map(lambda x: os.path.isdir(x), filesindir))]
@@ -286,7 +301,7 @@ def _package_name(packagename, verbose=3):
         if np.any(Iloc):
             packagename = getdirs[Iloc][0]
 
-    if verbose>=4: print('[pyrelease] Done! Working on package: [%s]' %(packagename))
+    if verbose>=4: print('[irelease] Done! Working on package: [%s]' %(packagename))
     return(packagename)
 
 
@@ -441,8 +456,8 @@ def _getversion(initfile):
 def _try_to_release(username, packagename, getversion, initfile, install, clean, twine, git, git_pathname, verbose):
     # Remove build directories
     if verbose>=3 and clean:
-        input("[pyrelease] Press [Enter] to clean previous local builds from the package directory..")
-        print('[pyrelease] =============================================================================')
+        input("[irelease] Press [Enter] to clean previous local builds from the package directory..")
+        print('[irelease] =============================================================================')
         _make_clean(packagename, verbose=verbose)
     # Version found, lets move on:
     current_version = getversion.group(1)
@@ -451,67 +466,64 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
         git_version = github_version(username, packagename, verbose=verbose)
     elif git=='gitlab':
         git_version = '0.0.0'
-        if verbose>=3: print("[pyrelease] Version is not checked on %s." %(git))
+        if verbose>=3: print("[irelease] Version is not checked on %s." %(git))
 
     # Print info about the version
-    print('[pyrelease] =============================================================================')
+    print('[irelease] =============================================================================')
     if git_version=='0.0.0':
-        if verbose>=3: print("[pyrelease] Release package: [%s]" %(packagename))
+        if verbose>=3: print("[irelease] Release package: [%s]" %(packagename))
         VERSION_OK = True
     elif git_version=='9.9.9':
-        if verbose>=3: print("[pyrelease] %s/%s not available at %s." %(username, packagename, git))
+        if verbose>=3: print("[irelease] %s/%s not available at %s." %(username, packagename, git))
         VERSION_OK = False
     elif version.parse(current_version)>version.parse(git_version):
-        if verbose>=3: print('[pyrelease] Current local version from %s: %s and from __init__.py: %s' %(git, git_version, current_version))
+        if verbose>=3: print('[irelease] Current local version from %s: %s and from __init__.py: %s' %(git, git_version, current_version))
         VERSION_OK = True
     else:
         VERSION_OK = False
 
     if (not VERSION_OK) and (git_version != '9.9.9') and (git_version != '0.0.0'):
         if verbose>=2:
-            print('[pyrelease] WARNING: You may need to increase your version: [%s]' %(initfile))
-            print('[pyrelease] WARNING: Local version : %s' %(current_version))
-            print('[pyrelease] WARNING: %s version: %s' %(git, git_version))
+            print('[irelease] WARNING: You may need to increase your version: [%s]' %(initfile))
+            print('[irelease] WARNING: Local version : %s' %(current_version))
+            print('[irelease] WARNING: %s version: %s' %(git, git_version))
 
-    # Provide option to continue with the release
-    print('[pyrelease] =============================================================================')
-    print("[pyrelease] Type [Q] to Quit and [Enter] to create the distribution archives.")
-    print('[pyrelease] =============================================================================')
-    user_input = input("[pyrelease] > ")
-
-    # Continue is version is TRUE
-    if user_input=='':
-        # Make build and install
-        user_input = _make_build_and_install(packagename, current_version, install)
-        if user_input=='':
-            # Set tag to github and push
-            _github_set_tag_and_push(current_version, verbose=verbose)
-            # Upload to pypi
-            _upload_to_pypi(twine, verbose=verbose)
-            # Fin message and webbrowser
-            _fin_message(username, packagename, current_version, git_version, git, git_pathname, verbose)
+    # Make build and install
+    user_input = _make_build_and_install(packagename, current_version, install)
+    # Set tag to github and push
+    user_input = _github_set_tag_and_push(current_version, user_input, verbose=verbose)
+    # Upload to pypi
+    user_input = _upload_to_pypi(twine, user_input, verbose=verbose)
+    # Fin message and webbrowser
+    _fin_message(username, packagename, current_version, git_version, git, git_pathname, user_input, verbose)
 
 
 # %% Upload to pypi
-def _upload_to_pypi(twine, verbose=3):
-    bashCommand=''
-    if verbose>=3:
-        print('[pyrelease] =============================================================================')
-        print("[pyrelease] Type [Q] to Quit and [Enter] to release on PyPi.")
-        print('[pyrelease] =============================================================================')
+def _upload_to_pypi(twine, user_input, verbose=3):
+    # Push to git and set the Tag.
+    # Only continue if the previous state was not to [Q]uit!
+    if user_input=='':
+        print('[irelease] =============================================================================')
+        print("[irelease] Type [Q] to Quit and [Enter] to release on PyPi using Twine.")
+        print('[irelease] =============================================================================')
+        user_input = input("[irelease] > ")
 
-    if twine is None:
-        bashCommand = "twine" + ' upload dist/*'
-    elif os.path.isfile(twine):
-        bashCommand = twine + ' upload dist/*'
+        if user_input=='':
+            bashCommand=''
+            if twine is None:
+                bashCommand = "twine" + ' upload dist/*'
+            elif os.path.isfile(twine):
+                bashCommand = twine + ' upload dist/*'
 
-    if verbose>=3: print('[pyrelease] %s' %(bashCommand))
+            if verbose>=3: print('[irelease] %s' %(bashCommand))
 
-    try:
-        os.system(bashCommand)
-    except:
-        pass
+            try:
+                os.system(bashCommand)
+            except:
+                pass
 
+    # return
+    return user_input
 
 # %% Main function
 def main():

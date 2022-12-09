@@ -14,7 +14,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
      install_requires=['setuptools','wheel','twine','packaging','numpy'],
-     entry_points = {'console_scripts': ['pyrelease = irelease.irelease:main',],},
+     entry_points = {'console_scripts': ['pyrelease = irelease.irelease:main','irelease = irelease.irelease:main'],},
      python_requires='>=3',
      name='irelease',
      version=new_version,
