@@ -87,7 +87,7 @@ irelease -c 1
 irelease -v 5
 
 # Twine path for to irelease at pypi. This is automatically determined if standard installation is performed.
-irelease -t 'C://Users/erdogant/AppData/Roaming/Python/Python36/Scripts/twine.exe'
+irelease -t 'C://<username>/AppData/Roaming/Python/Python36/Scripts/twine.exe'
 ```
 
 ### Example:
