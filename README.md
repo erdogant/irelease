@@ -10,7 +10,7 @@
 <!---[![Coffee](https://img.shields.io/badge/coffee-black-grey.svg)](https://erdogant.github.io/donate/?currency=USD&amount=5)-->
 
 
-Release your library by using the command: ``pyrelease``
+Release your library by using the command: ``irelease`` or ``pyrelease``
 
 # 
 **Star this repo if you like it! ⭐️**
@@ -53,21 +53,21 @@ python setup.py install
 ### Run irelease
 Go to the directory where the package is you want to release and simply run ``release``:
 ```bash
-$ pyrelease
+$ irelease
 ```
 
 The following arguments are availble:
 ```bash
 # Github name
-pyrelease -u <githubname>
+irelease -u <githubname>
 
 # Package name your want to release
-pyrelease -p <packagename>
+irelease -p <packagename>
 
 # Removing local builds:
 # 1: Yes
 # 0: No
-pyrelease -c 1
+irelease -c 1
 
 # Verbosity messages:
 # 0: No messages
@@ -76,10 +76,10 @@ pyrelease -c 1
 # 3: Regular messages and above
 # 4: Debug and above
 # 5: Trace and above
-pyrelease -v 5
+irelease -v 5
 
 # Twine path for to irelease at pypi. This is automatically determined if standard installation is performed.
-pyrelease -t 'C://Users/erdogant/AppData/Roaming/Python/Python36/Scripts/twine.exe'
+irelease -t 'C://Users/erdogant/AppData/Roaming/Python/Python36/Scripts/twine.exe'
 ```
 
 ### Example:
@@ -118,19 +118,19 @@ Your package to-be-published must have the correct structure. At least these fil
 
 #### Go to your destination dir and run release:
 ```bash
-$ pyrelease
+$ irelease
 ```
 
 **release with your specified arguments**
 ```bash
 # Package can be specified:
-$ bnlearn>pyrelease -p bnlearn
+$ bnlearn>irelease -p bnlearn
 
 # Username can be specified:
-$ bnlearn>pyrelease -u erdogant
+$ bnlearn>irelease -u erdogant
 
 # Cleaning of previous builds in directory can be disabled
-$ bnlearn>pyrelease -c 0
+$ bnlearn>irelease -c 0
 ```
 
 <p align="left">
