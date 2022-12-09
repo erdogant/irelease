@@ -78,6 +78,13 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
     -------
     None.
 
+    Examples
+    --------
+    >>> # Go to the root of the directory package you aim to release and type:
+    >>> irelease
+    >>> # Description of the input arguments:
+    >>> irelease --help
+
     References
     ----------
     * https:https://github.com/erdogant/irelease
@@ -302,7 +309,7 @@ def _package_name(packagename, verbose=3):
         if np.any(Iloc):
             packagename = getdirs[Iloc][0]
 
-    if verbose>=4: print('[irelease] Done! Working on package: [%s]' %(packagename))
+    if verbose>=4: print('[irelease] Working on package: [%s]' %(packagename))
     return(packagename)
 
 
@@ -525,6 +532,7 @@ def _upload_to_pypi(twine, user_input, verbose=3):
 
     # return
     return user_input
+
 
 # %% Main function
 def main():
