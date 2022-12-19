@@ -252,6 +252,7 @@ def _make_build_and_install(packagename, current_version, install):
         print("[irelease] Distribution archives are created on your local machine!")
     return user_input
 
+
 def _github_set_tag_and_push(current_version, user_input, verbose=3):
     # Push to git and set the Tag.
     # Only continue if the previous state was not to [Q]uit!
@@ -310,7 +311,7 @@ def _package_name(packagename, verbose=3):
             packagename = getdirs[Iloc][0]
 
     if verbose>=4: print('[irelease] Working on package: [%s]' %(packagename))
-    return(packagename)
+    return (packagename)
 
 
 def _git_host(verbose=3):
@@ -320,9 +321,9 @@ def _git_host(verbose=3):
     gitconfig = f.readlines()
     for line in gitconfig:
         line = line.replace('\t', '')
-        if re.search('@github.com', line) is not None:
+        if re.search('github.com', line) is not None:
             git = 'github'
-        if re.search('@gitlab.com', line) is not None:
+        if re.search('gitlab.com', line) is not None:
             git = 'gitlab'
     return git
 
