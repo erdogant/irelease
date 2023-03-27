@@ -370,7 +370,8 @@ def _git_pathname(git, username, packagename, verbose=3):
             repo_line = line[geturl.end():]
             start_pos = re.search(username, repo_line)
             end_pos = re.search(packagename, repo_line)
-            git_pathname = repo_line[start_pos.end():end_pos.start()]
+            if start_pos is not None and end_pos is not None:
+                git_pathname = repo_line[start_pos.end():end_pos.start()]
 
     return git_pathname
 

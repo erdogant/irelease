@@ -7,8 +7,14 @@
 # --------------------------------------------------
 
 import irelease
-print(irelease.__version__)
-dir(irelease)
+# dir(irelease)
+# print(irelease.__version__)
 
 # %%
-irelease.make_script()
+# irelease.make_script()
+
+# %%
+import irelease
+irelease.run('erdogant', 'pca', clean=False, install=False, twine=None, verbose=3)
+
+
