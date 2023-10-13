@@ -281,9 +281,21 @@ def _github_set_tag_and_push(current_version, user_input, verbose=3):
 
 def _make_clean(packagename, verbose=3):
     if verbose>=3: print('[irelease] Removing local build directories..')
-    if os.path.isdir('dist'): shutil.rmtree('dist')
-    if os.path.isdir('build'): shutil.rmtree('build')
-    if os.path.isdir(packagename + '.egg-info'): shutil.rmtree(packagename + '.egg-info')
+    # if os.path.isdir('dist'): shutil.rmtree('dist')
+    # if os.path.isdir('build'): shutil.rmtree('build')
+    # if os.path.isdir(packagename + '.egg-info'): shutil.rmtree(packagename + '.egg-info')
+    directories_to_remove = ['dist',
+                            'build',
+                            packagename + '.egg-info',
+                            os.path.join(packagename, '__pycache__'),
+                            os.path.join(packagename, 'tests', '__pycache__'),
+                            '.pytest_cache',
+                            '.pylint.d']
+
+    for directory in directories_to_remove:
+        if os.path.isdir(directory):
+            if verbose>=3: print('[irelease] [%s] is removed from packagedir' %(directory))
+            shutil.rmtree(directory)
 
 
 def _get_platform():
