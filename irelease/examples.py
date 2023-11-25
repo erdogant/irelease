@@ -12,6 +12,7 @@ import irelease
 
 # %%
 # irelease.make_script()
+irelease.run()
 
 # %%
 import irelease

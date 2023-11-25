@@ -359,9 +359,8 @@ def _git_username(git, verbose=3):
         # Extract the username
         if geturl:
             # exract the username
-            username_line = line[geturl.end() + 1:(geturl.end() + 20)]
-            next_char = re.search('/', username_line)
-            username = username_line[:next_char.start()].replace('"', '')
+            username_line = line[geturl.end() + 1:]
+            username = username_line.split('/', 2)[1]
 
     return username
 

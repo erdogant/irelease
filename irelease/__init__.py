@@ -5,7 +5,7 @@ from irelease.irelease import(
 
 __author__ = 'Erdogan Tasksen'
 __email__ = 'erdogant@gmail.com'
-__version__ = '1.1.4'
+__version__ = '1.1.5'
 
 
 # module level doc-string
@@ -18,9 +18,9 @@ irelease - irelease is an Python package to release your package
 Examples
 --------
 >>> # Go to the root of the directory package you aim to release.
->>> irelease
+>>> pyrelease
 >>> # Description of the input arguments:
->>> irelease --help
+>>> pyrelease --help
 
 References
 ----------
