@@ -350,8 +350,9 @@ def _git_username(git, verbose=3):
     # Iterate over the lines and search for git@github.com
     for line in gitconfig:
         line = line.replace('\t', '')
-        geturl = re.search('@' + git + '.com', line)  # SSH
-        if not geturl:
+        line = line.replace('\n', '')
+        geturl = re.search(git + '.com', line)  # SSH
+        if not geturl or geturl is None:
             if git =='gitlab':
                 geturl = re.search('https://' + git, line)  # HTTPs
             elif git =='github':
@@ -360,7 +361,8 @@ def _git_username(git, verbose=3):
         if geturl:
             # exract the username
             username_line = line[geturl.end() + 1:]
-            username = username_line.split('/', 2)[1]
+            username_line = username_line.split('/', 2)[0]
+            username = username_line.split('.git', 2)[0]
 
     return username
 
