@@ -17,9 +17,25 @@ import urllib.request
 import shutil
 from packaging import version
 import webbrowser
+import configparser
+
 IGNORE_DIRS_IN_PACKAGE = np.array([f for f in os.listdir('.') if os.path.isdir(f) and (f[0]=='.' or f[0]=='_')])
 EXCLUDE_DIR = np.unique(np.array(list(IGNORE_DIRS_IN_PACKAGE) + ['build', 'dist', 'doc', 'docs', 'depricated']))
 
+# %%
+def get_pypi_credentials(verbose=3):
+    config = configparser.ConfigParser()
+    config.read('.pypirc')
+
+    if 'pypi' in config:
+        pypi_section = config['pypi']
+        if 'username' in pypi_section and 'password' in pypi_section:
+            username = pypi_section['username']
+            password = pypi_section['password']
+            return username, password
+        else:
+            if verbose>=3: print('[irelease] No [.pypirc] file found. Type in the username and password manually.')
+    return None, None
 
 # %% Make executable:
 def make_script():
@@ -540,6 +556,16 @@ def _upload_to_pypi(twine, user_input, verbose=3):
 
             if verbose>=3: print('[irelease] %s' %(bashCommand))
 
+            # Get PyPI credentials
+            username, password = get_pypi_credentials(verbose=verbose)
+
+            if (username is not None) and (password is not None):
+                print('[irelease] =============================================================================')
+                print("[irelease] Hit <enter> use the username and password from .pypirc")
+                print('[irelease] =============================================================================')
+                user_input = input("[irelease] > ")
+                if user_input=='':
+                    bashCommand = bashCommand + ' -u ' + username + ' -p ' + password
             try:
                 os.system(bashCommand)
             except:
