@@ -6,3 +6,4 @@ packaging
 twine
 setuptools
 wheel
+toml
