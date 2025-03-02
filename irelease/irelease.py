@@ -340,22 +340,6 @@ def _get_platform():
     return platforms[sys.platform]
 
 
-def _package_name(packagename, verbose=3):
-    # Infer name of the package by excluding all known-required-files-and-folders.
-    if packagename is None:
-        if verbose>=4: print('[irelease] Infer name of the package from the directory..')
-        # List all folders in dir
-        filesindir = np.array(os.listdir())
-        getdirs = filesindir[list(map(lambda x: os.path.isdir(x), filesindir))]
-        # Remove all the known not relevant files and dirs
-        Iloc = np.isin(np.array(list(map(str.lower, getdirs))), EXCLUDE_DIR)==False  # noqa
-        if np.any(Iloc):
-            packagename = getdirs[Iloc][0]
-
-    if verbose>=4: print('[irelease] Working on package: [%s]' %(packagename))
-    return (packagename)
-
-
 def _git_host(verbose=3):
     # Extract github/gitlab from config file
     git=None
