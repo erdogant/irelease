@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "irelease"
+dynamic = ["version"]
+authors = [{ name = "Erdogan Taskesen", email = "erdogant@gmail.com" },]
+description = "irelease is an Python package to release your package to Pypi."
+readme = "README.md"
+requires-python = ">=3"
+license = { file = "LICENSE" }
+keywords = ["python", "pypi", "release", "tag", "release-automation"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = ['twine','packaging','numpy', 'toml']
+
+[project.scripts]
+pyrelease = "irelease.irelease:main"
+irelease = "irelease.irelease:main"
+
+[project.urls]
+Homepage = "https://erdogant.github.io/irelease"
+Download = "https://github.com/erdogant/irelease/archive/{version}.tar.gz"
+
+[tool.setuptools]
+packages = ["irelease"]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "irelease.__version__" }
