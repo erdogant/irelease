@@ -18,6 +18,8 @@ import shutil
 from packaging import version
 import webbrowser
 import configparser
+import glob
+import toml
 
 IGNORE_DIRS_IN_PACKAGE = np.array([f for f in os.listdir('.') if os.path.isdir(f) and (f[0]=='.' or f[0]=='_')])
 EXCLUDE_DIR = np.unique(np.array(list(IGNORE_DIRS_IN_PACKAGE) + ['build', 'dist', 'doc', 'docs', 'depricated']))
@@ -111,7 +113,7 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
     # Set defaults
     username, packagename, clean, install, twine, git, git_pathname, verbose = _set_defaults(username, packagename, clean, install, twine, verbose)
     # Get package name
-    packagename = _package_name(packagename, verbose=verbose)
+    packagename = _package_name_infer(packagename, verbose=verbose)
     # Determine github/gitlab
 
     if packagename is None: raise Exception('[irelease] ERROR: Package directory does not exists.')
@@ -250,16 +252,28 @@ def _make_build_and_install(packagename, current_version, install):
         # Make new build
         print('[irelease] =============================================================================')
         print('[irelease] Making new wheel..')
+        print('[irelease] python -m build --wheel')
         print('[irelease] =============================================================================')
-        os.system('python setup.py bdist_wheel')
+        if os.path.isfile('setup.py'):
+            os.system('python setup.py bdist_wheel')
+        else:
+            os.system('python -m build --wheel')
+
         # Make new build
         print('[irelease] =============================================================================')
         print('[irelease] Making source build..')
+        print('[irelease] python -m build --sdist')
         print('[irelease] =============================================================================')
-        os.system('python setup.py sdist')
+        if os.path.isfile('setup.py'):
+            os.system('python setup.py sdist')
+        else:
+            os.system('python -m build --sdist')
+
         # Install new wheel
         if install:
-            command = 'pip install -U dist/' + packagename + '-' + current_version + '-py3-none-any.whl'
+            # command = 'pip install -U dist/' + packagename + '-' + current_version + '-py3-none-any.whl'
+            wheel_file = glob.glob(f"dist/{packagename}-{current_version}-*.whl")[0]
+            command = f'pip install -U {wheel_file}'
             print('[irelease] =============================================================================')
             print('[irelease] Installing new wheel:\n%s' %(command))
             print('[irelease] =============================================================================')
@@ -405,46 +419,45 @@ def _git_pathname(git, username, packagename, verbose=3):
     return git_pathname
 
 
-# def _package_name(git, verbose=3):
-#     # Extract github username from config file
-#     package = None
-#     if verbose>=4: print('[release.debug] Extracting package name from .git folder')
-#     # Open github config file
-#     f = open('./.git/config')
-#     gitconfig = f.readlines()
-#     # Iterate over the lines and search for git@github.com
-#     for line in gitconfig:
-#         line = line.replace('\t', '')
-#         if git=='github':
-#             geturl = re.search('@github.com', line)
-#         # If git@github.com detected: exract the package
-#         if geturl:
-#             repo_line = line[geturl.end():]
-#             start_pos = re.search('/', repo_line)
-#             stop_pos = re.search('.git', repo_line)
-#             package = repo_line[start_pos.end():stop_pos.start()].replace('"', '')
+def _package_name_infer(packagename, verbose=3):
+    # Infer name of the package by excluding all known-required-files-and-folders.
+    if packagename is None:
+        if verbose>=4: print('[irelease] Infer name of the package from the directory..')
+        # List all folders in dir
+        filesindir = np.array(os.listdir())
+        getdirs = filesindir[list(map(lambda x: os.path.isdir(x), filesindir))]
+        # Remove all the known not relevant files and dirs
+        Iloc = np.isin(np.array(list(map(str.lower, getdirs))), EXCLUDE_DIR)==False  # noqa
+        if np.any(Iloc):
+            packagename = getdirs[Iloc][0]
 
-#     return package
-
+    if verbose>=4: print('[irelease] Working on package: [%s]' %(packagename))
+    return packagename
 
 def _package_name(git, verbose=3):
     # Extract github username from config file
     package = None
     if verbose>=4: print('[release.debug] Extracting package name from .git folder')
+
     # Open github config file
-    f = open('setup.py')
-    gitconfig = f.readlines()
-    # Iterate over the lines and search for git@github.com
-    for line in gitconfig:
-        line = line.replace('\t', '')
-        geturl = re.search('name=', line)
-        # If name= detected: exract the package
-        if geturl:
-            package = line[geturl.end():]
-            package = package.replace('\n', '')
-            package = package.replace(',', '')
-            package = package.replace("'", '')
-            package = package.replace('"', '')
+    if os.path.isfile('setup.py'):
+        f = open('setup.py')
+        gitconfig = f.readlines()
+        # Iterate over the lines and search for git@github.com
+        for line in gitconfig:
+            line = line.replace('\t', '')
+            geturl = re.search(r'name\s*=', line)
+            # If name= detected: exract the package
+            if geturl:
+                package = line[geturl.end():]
+                package = package.replace('\n', '')
+                package = package.replace(',', '')
+                package = package.replace("'", '')
+                package = package.replace('"', '')
+    elif os.path.isfile('pyproject.toml'):
+        with open("pyproject.toml", "r") as f:
+            data = toml.load(f)
+        package = data["project"]["name"]
 
     return package
 
