@@ -127,14 +127,14 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
             os.system('cls')
         else:
             os.system('clear')
-        print('[irelease] =============================================================================')
+        print('[irelease] ================================================================')
         print('[irelease] username  : %s' %username)
         print('[irelease] Package   : %s' %packagename)
         print('[irelease] Git       : %s' %git)
         print('[irelease] Install   : %s' %install)
         print('[irelease] Clean     : %s' %clean)
         print('[irelease] init file : %s' %initfile)
-        print('[irelease] =============================================================================')
+        print('[irelease] ================================================================')
 
     if os.path.isfile(initfile):
         # Extract version from __init__.py
@@ -148,14 +148,14 @@ def run(username, packagename, clean=False, install=False, twine=None, verbose=3
 
     if verbose>=3:
         input("[irelease] Press [Enter] to exit.")
-        print('[irelease] =============================================================================')
+        print('[irelease] ================================================================')
 
 
 # %% Final message
 def _fin_message(username, packagename, current_version, git_version, git, git_pathname, user_input, verbose):
     if user_input=='':
         if verbose>=2:
-            print('[irelease] =============================================================================')
+            print('[irelease] ================================================================')
             print('[irelease] >  Almost done but one manual action is required:')
             print('[irelease] 1. Go to your %s most recent releases.' %(git))
             print('[irelease] 2. Press botton [Create release from tag]')
@@ -163,7 +163,7 @@ def _fin_message(username, packagename, current_version, git_version, git, git_p
             print('[irelease] 4. Make a description in the field: [Create release from Tag]')
             print('[irelease] 5. Press <Publish release> at the bottom of the page.')
             print('[irelease] 6. Fin!')
-            print('[irelease] =============================================================================')
+            print('[irelease] ================================================================')
 
         # Open webbroswer and navigate to git to add version
         if verbose>=3: input("[irelease] Press [Enter] to navigate..")
@@ -174,7 +174,7 @@ def _fin_message(username, packagename, current_version, git_version, git, git_p
         webbrowser.open(git_release_link, new=2)
         if verbose>=2:
             print('[irelease] %s' %(git_release_link))
-            print('[irelease] =============================================================================')
+            print('[irelease] ================================================================')
 
 
 # %% Get latest github/gitlab version
@@ -243,27 +243,27 @@ def github_version(username, packagename, verbose=3):
 # %% Helper functions
 def _make_build_and_install(packagename, current_version, install):
     # Provide option to continue with the release
-    print('[irelease] =============================================================================')
+    print('[irelease] ================================================================')
     print("[irelease] Type [Q] to Quit and [Enter] to create the Distribution Archives.")
-    print('[irelease] =============================================================================')
+    print('[irelease] ================================================================')
     user_input = input("[irelease] > ")
 
     if user_input=='':
         # Make new build
-        print('[irelease] =============================================================================')
+        print('[irelease] ================================================================')
         print('[irelease] Making new wheel..')
         print('[irelease] python -m build --wheel')
-        print('[irelease] =============================================================================')
+        print('[irelease] ================================================================')
         if os.path.isfile('setup.py'):
             os.system('python setup.py bdist_wheel')
         else:
             os.system('python -m build --wheel')
 
         # Make new build
-        print('[irelease] =============================================================================')
+        print('[irelease] ================================================================')
         print('[irelease] Making source build..')
         print('[irelease] python -m build --sdist')
-        print('[irelease] =============================================================================')
+        print('[irelease] ================================================================')
         if os.path.isfile('setup.py'):
             os.system('python setup.py sdist')
         else:
@@ -274,11 +274,11 @@ def _make_build_and_install(packagename, current_version, install):
             # command = 'pip install -U dist/' + packagename + '-' + current_version + '-py3-none-any.whl'
             wheel_file = glob.glob(f"dist/{packagename}-{current_version}-*.whl")[0]
             command = f'pip install -U {wheel_file}'
-            print('[irelease] =============================================================================')
+            print('[irelease] ================================================================')
             print('[irelease] Installing new wheel:\n%s' %(command))
-            print('[irelease] =============================================================================')
+            print('[irelease] ================================================================')
             os.system(command)
-        print('[irelease] =============================================================================')
+        print('[irelease] ================================================================')
         print("[irelease] Distribution archives are created on your local machine!")
     return user_input
 
@@ -287,9 +287,9 @@ def _github_set_tag_and_push(current_version, user_input, verbose=3):
     # Push to git and set the Tag.
     # Only continue if the previous state was not to [Q]uit!
     if user_input=='':
-        print('[irelease] =============================================================================')
+        print('[irelease] ================================================================')
         print("[irelease] Type [Q] to Quit and [Enter] to push to Git and create tag [%s]." %(current_version))
-        print('[irelease] =============================================================================')
+        print('[irelease] ================================================================')
         user_input = input("[irelease] > ")
 
         if user_input=='':
@@ -493,7 +493,7 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
     # Remove build directories
     if verbose>=3 and clean:
         input("[irelease] Press [Enter] to clean previous local builds from the package directory..")
-        print('[irelease] =============================================================================')
+        print('[irelease] ===================================================================')
         _make_clean(packagename, verbose=verbose)
     # Version found, lets move on:
     current_version = getversion.group(1)
@@ -505,7 +505,7 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
         if verbose>=3: print("[irelease] Version is not checked on %s." %(git))
 
     # Print info about the version
-    print('[irelease] =============================================================================')
+    print('[irelease] ===================================================================')
     if git_version=='0.0.0':
         if verbose>=3: print("[irelease] Release package: [%s]" %(packagename))
         VERSION_OK = True

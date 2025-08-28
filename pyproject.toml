@@ -9,12 +9,30 @@ authors = [{ name = "Erdogan Taskesen", email = "erdogant@gmail.com" },]
 description = "irelease is an Python package to release your package to Pypi."
 readme = "README.md"
 requires-python = ">=3"
-license.file = "LICENSE"
-keywords = ["python", "pypi", "release", "tag", "release-automation"]
+license = "MIT"
+keywords = [
+    "Python",
+    "PyPI",
+    "release automation",
+    "package release",
+    "versioning",
+    "tagging",
+    "build automation",
+    "publishing",
+    "continuous integration",
+    "CI/CD",
+    "automation",
+    "release management"
+]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Operating System :: Unix",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = ['twine','packaging','numpy', 'toml', 'build']
 
