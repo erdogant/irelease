@@ -493,7 +493,7 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
     # Remove build directories
     if verbose>=3 and clean:
         input("[irelease] Press [Enter] to clean previous local builds from the package directory..")
-        print('[irelease] ===================================================================')
+        print('[irelease] =========================================================')
         _make_clean(packagename, verbose=verbose)
     # Version found, lets move on:
     current_version = getversion.group(1)
@@ -505,7 +505,7 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
         if verbose>=3: print("[irelease] Version is not checked on %s." %(git))
 
     # Print info about the version
-    print('[irelease] ===================================================================')
+    print('[irelease] =========================================================')
     if git_version=='0.0.0':
         if verbose>=3: print("[irelease] Release package: [%s]" %(packagename))
         VERSION_OK = True
@@ -539,9 +539,9 @@ def _upload_to_pypi(twine, user_input, verbose=3):
     # Push to git and set the Tag.
     # Only continue if the previous state was not to [Q]uit!
     if user_input=='':
-        print('[irelease] =============================================================================')
+        print('[irelease] =========================================================')
         print("[irelease] Type [Q] to Quit and [Enter] to release on PyPi using Twine.")
-        print('[irelease] =============================================================================')
+        print('[irelease] =========================================================')
         user_input = input("[irelease] > ")
 
         if user_input=='':
@@ -557,9 +557,9 @@ def _upload_to_pypi(twine, user_input, verbose=3):
             username, password = get_pypi_credentials(verbose=verbose)
 
             if (username is not None) and (password is not None):
-                print('[irelease] =============================================================================')
+                print('[irelease] =========================================================')
                 print("[irelease] Hit <enter> use the username and password from .pypirc")
-                print('[irelease] =============================================================================')
+                print('[irelease] =========================================================')
                 user_input = input("[irelease] > ")
                 if user_input=='':
                     bashCommand = bashCommand + ' -u ' + username + ' -p ' + password
