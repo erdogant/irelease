@@ -63,7 +63,8 @@ def make_script():
 
 
 # %% def main(username, packagename=None, verbose=3):
-def run(username, packagename, clean=False, install=False, twine=None, verbose=3):
+def run(username, packagename, clean=True, install=False, twine=None, verbose=3):
+
     """Make new release on git and PyPi.
 
     Description
@@ -584,12 +585,12 @@ def main():
     # main
     parser = argparse.ArgumentParser()
     # parser.add_argument("github", type=str, help="github account name")
-    parser.add_argument("-u", "--username", type=str, help="Username on Github/Gitlab..")
+    parser.add_argument("-u", "--username", type=str, help="Username on Github/Gitlab.")
     parser.add_argument("-p", "--package", type=str, help="Package name to be released.")
-    parser.add_argument("-c", "--clean", type=int, choices=[0, 1], help="Remove local builds: [dist], [build] and [x.egg-info].")
-    parser.add_argument("-i", "--install", type=int, choices=[0, 1], help="Install this versions on local machine.")
-    parser.add_argument("-t", "--twine", type=str, help="Path to twine in case you have a custom build.")
-    parser.add_argument("-v", "--verbosity", type=int, choices=[0, 1, 2, 3, 4, 5], help="Verbosity, higher number tends to more information.")
+    parser.add_argument("-c", "--clean", action="store_true", default=True, help="Remove local builds (default: yes).")
+    parser.add_argument("-i", "--install", action="store_true", default=False, help="Install this version locally (default: no).")
+    parser.add_argument("-t", "--twine", type=str, help="Path to twine if you have a custom build.")
+    parser.add_argument("-v", "--verbosity", type=int, default=3, choices=[0,1,2,3,4,5], help="Verbosity level (default: 3).")
     args = parser.parse_args()
 
     # Go to main
