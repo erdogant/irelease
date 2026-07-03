@@ -1,0 +1,210 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ &mdash; irelease irelease documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=e0179649" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=ce29bd76"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            irelease
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installation.html#uninstall">Uninstall</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Summary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Summary.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Summary.html#schematic-overview">Schematic Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Examples.html">Basic Run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples.html#run-with-parameters">Run with Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples.html#retrieve-pypi-credentials">Retrieve PyPI Credentials</a></li>
+</ul>
+
+    <a href= "../genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">irelease</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">FAQ</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_backup/FAQ.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="faq">
+<h1>FAQ<a class="headerlink" href="#faq" title="Link to this heading"></a></h1>
+<section id="installation-and-setup">
+<h2>Installation and Setup<a class="headerlink" href="#installation-and-setup" title="Link to this heading"></a></h2>
+<p>The <em>irelease</em> package is distributed through PyPI, making it straightforward to add to any Python environment. A single command installs the library and its minimal dependencies:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install irelease</span>
+</pre></div>
+</div>
+<p>Once installed, the next step is to provide your GitHub credentials so that releases can be uploaded automatically. The helper function <code class="xref py py-func docutils literal notranslate"><span class="pre">make_script()</span></code> copies <em>irelease.py</em> into the working directory, simplifying subsequent releases by providing a lightweight shell wrapper. This design keeps sensitive information out of the source tree while still enabling fully automated publishing.</p>
+<p>The package expects a <strong>pyproject.toml</strong> or <strong>setup.py</strong> in the project root to discover metadata such as name, version, and dependencies. Without this file <em>irelease</em> cannot locate the distribution artifacts it needs to build and publish. Therefore, before running any release commands you should verify that your repository contains one of these configuration files.</p>
+<p>The command line interface is intentionally lightweight: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">irelease</span> <span class="pre">--help</span></code> lists all available subcommands and options. This single entry point eliminates the need for a separate script or wrapper, reducing maintenance overhead and keeping the user experience consistent across platforms.</p>
+<p>A typical setup sequence looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate a release script</span>
+<span class="n">make_script</span><span class="p">()</span>
+
+<span class="c1"># Run a full release (build, tag, upload)</span>
+<span class="n">run</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">&quot;erdogant&quot;</span><span class="p">,</span> <span class="n">packagename</span><span class="o">=</span><span class="s2">&quot;irelease&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="parameter-table-for-make-script-and-run">
+<h3>Parameter table for <code class="xref py py-func docutils literal notranslate"><span class="pre">make_script()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code><a class="headerlink" href="#parameter-table-for-make-script-and-run" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 10.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>username</p></td>
+<td><p>str</p></td>
+<td><p>GitHub account name used when creating tags/releases.</p></td>
+</tr>
+<tr class="row-odd"><td><p>packagename</p></td>
+<td><p>str</p></td>
+<td><p>Name of the package to be released; must match repository and distribution names.</p></td>
+</tr>
+<tr class="row-even"><td><p>clean</p></td>
+<td><p>bool</p></td>
+<td><p>If True, removes local build artifacts before creating a new release.</p></td>
+</tr>
+<tr class="row-odd"><td><p>twine</p></td>
+<td><p>str</p></td>
+<td><p>Path to the twine executable used for uploading distributions to PyPI.</p></td>
+</tr>
+<tr class="row-even"><td><p>verbose</p></td>
+<td><p>int</p></td>
+<td><p>Verbosity level; higher values print more detailed progress messages.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="common-errors-and-troubleshooting">
+<h2>Common Errors and Troubleshooting<a class="headerlink" href="#common-errors-and-troubleshooting" title="Link to this heading"></a></h2>
+<p>Typical errors when using <em>irelease</em> arise from missing credentials in <code class="docutils literal notranslate"><span class="pre">~/.pypirc</span></code>, incorrect package names, or network failures during upload. The <code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code> function accepts a <code class="docutils literal notranslate"><span class="pre">verbose</span></code> flag that can be increased to 4 for more diagnostics. Ensuring that the GitHub account has permission to create tags and releases is essential; otherwise the tagging step will fail silently.</p>
+<p>Another frequent pitfall is attempting to run <em>irelease</em> in a directory without a valid packaging configuration. Because the tool relies on <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> or <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> for metadata, its absence leads to ambiguous build failures that can be hard to trace. Running <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">irelease</span> <span class="pre">--check</span></code> (if available) before a full release can surface such issues early.</p>
+<p>When network errors occur during upload, retrying the command often resolves transient problems. However, persistent timeouts may indicate firewall restrictions or incorrect proxy settings; configuring environment variables like <code class="docutils literal notranslate"><span class="pre">HTTP_PROXY</span></code> and <code class="docutils literal notranslate"><span class="pre">HTTPS_PROXY</span></code> can mitigate these situations.</p>
+<p>Example of increasing verbosity for debugging:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Increase verbosity for debugging</span>
+<span class="n">run</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">&quot;erdogant&quot;</span><span class="p">,</span> <span class="n">packagename</span><span class="o">=</span><span class="s2">&quot;irelease&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="parameter-choices">
+<h2>Parameter Choices<a class="headerlink" href="#parameter-choices" title="Link to this heading"></a></h2>
+<p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code> function offers several optional parameters that allow users to tailor the release process to their workflow. Setting <code class="docutils literal notranslate"><span class="pre">clean=True</span></code> ensures that stale distribution files are removed before building, which can prevent accidental uploads of outdated artifacts. Specifying a custom path for <code class="docutils literal notranslate"><span class="pre">twine</span></code> is useful when the executable resides in a non-standard location or when using a virtual environment that does not expose it globally.</p>
+<p>If you only want to create GitHub releases without uploading to PyPI, set <code class="docutils literal notranslate"><span class="pre">--pypi</span> <span class="pre">False</span></code>. Conversely, use <code class="docutils literal notranslate"><span class="pre">--github</span> <span class="pre">False</span></code> to skip GitHub tagging when publishing locally. These flags give fine-grained control over which parts of the release pipeline are executed.</p>
+<p>Example: Release only to PyPI</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Release only to PyPI</span>
+<span class="n">run</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">&quot;erdogant&quot;</span><span class="p">,</span> <span class="n">packagename</span><span class="o">=</span><span class="s2">&quot;irelease&quot;</span><span class="p">,</span> <span class="n">github</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="performance-tips">
+<h2>Performance Tips<a class="headerlink" href="#performance-tips" title="Link to this heading"></a></h2>
+<p>Running <code class="xref py py-func docutils literal notranslate"><span class="pre">make_script()</span></code> once creates a lightweight shell wrapper that avoids repeated Python imports, thereby reducing startup time for subsequent releases. The <code class="docutils literal notranslate"><span class="pre">--clean</span></code> flag should be used sparingly; cleaning large build directories can add overhead and may not be necessary if your CI pipeline already handles artifact cleanup.</p>
+<p>For continuous integration pipelines, caching the <code class="docutils literal notranslate"><span class="pre">~/.pypirc</span></code> file and GitHub tokens can dramatically reduce authentication time. Storing these secrets in environment variables or secure storage solutions ensures that each job starts with the required credentials without manual intervention.</p>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading"></a></h2>
+<p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">github_version()</span></code> function only retrieves the latest tag from the default branch; it does not support pre-releases or custom tag prefixes. The package assumes a standard Python packaging layout and may fail with non-standard project structures, such as those that use unconventional directory hierarchies or build systems.</p>
+</section>
+<section id="comparison-to-alternatives">
+<h2>Comparison to Alternatives<a class="headerlink" href="#comparison-to-alternatives" title="Link to this heading"></a></h2>
+<p>Unlike full-featured CI/CD solutions, <em>irelease</em> focuses on simplicity: it automates version bumping, building wheels, tagging GitHub releases, and uploading to PyPI in a single command. It does not provide advanced workflow orchestration or multi-environment deployment features found in tools like <code class="docutils literal notranslate"><span class="pre">setuptools_scm</span></code> or <code class="docutils literal notranslate"><span class="pre">twine-multi</span></code>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Erdogan Taskesen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,191 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basic Run &mdash; irelease irelease documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=e0179649" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=ce29bd76"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Background" href="Summary.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            irelease
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html#uninstall">Uninstall</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Summary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Summary.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Summary.html#schematic-overview">Schematic Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Basic Run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#run-with-parameters">Run with Parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#parameters-of-irelease">Parameters of <cite>irelease</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#retrieve-pypi-credentials">Retrieve PyPI Credentials</a></li>
+</ul>
+
+    <a href= "genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">irelease</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Basic Run</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>The <em>irelease</em> package offers a concise API that automates the most common tasks involved in publishing Python projects.  This page walks through several representative use cases, explains why each parameter matters in real‑world release workflows, and provides runnable code snippets that can be dropped straight into a Python REPL or script.</p>
+<section id="basic-run">
+<h1>Basic Run<a class="headerlink" href="#basic-run" title="Link to this heading"></a></h1>
+<p>The simplest way to trigger a release is to call <cite>irelease</cite> or <cite>pyrelease</cite> with no arguments.
+This default invocation relies on module‑level configuration discovered from the current working directory.
+By inspecting files such as <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> or <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> it automatically determines the project name, version, and author information.
+The function then performs a minimal set of actions: it builds source and wheel distributions, uploads them to PyPI using the locally configured credentials, and creates a corresponding GitHub release tag if a remote repository is detected.</p>
+</section>
+<section id="run-with-parameters">
+<h1>Run with Parameters<a class="headerlink" href="#run-with-parameters" title="Link to this heading"></a></h1>
+<p>Often users need finer control over the release process.  The <cite>irelease</cite> function accepts several optional keyword arguments that let you override the automatic discovery logic, toggle cleaning and installation steps, or supply custom Twine configuration.  Specifying these options is particularly useful when working on multiple projects in a single environment or when integrating with external CI services that provide their own authentication mechanisms.</p>
+<section id="parameters-of-irelease">
+<h2>Parameters of <cite>irelease</cite><a class="headerlink" href="#parameters-of-irelease" title="Link to this heading"></a></h2>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Parameters of irelease.run</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 15.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>str</p></td>
+<td><p>Author/username identifier used for tagging and release metadata.</p></td>
+</tr>
+<tr class="row-odd"><td><p>script_type</p></td>
+<td><p>str</p></td>
+<td><p>Type of script to run (e.g., <code class="docutils literal notranslate"><span class="pre">'pca'</span></code>) – determines which internal workflow is invoked.</p></td>
+</tr>
+<tr class="row-even"><td><p>clean</p></td>
+<td><p>bool</p></td>
+<td><p>Whether to remove existing build artifacts before starting a new build cycle. <code class="docutils literal notranslate"><span class="pre">True</span></code> guarantees a fresh environment; <code class="docutils literal notranslate"><span class="pre">False</span></code> preserves intermediate files for debugging.</p></td>
+</tr>
+<tr class="row-odd"><td><p>install</p></td>
+<td><p>bool</p></td>
+<td><p>Controls whether the freshly built wheel should be installed into the current Python environment.  Handy when you want to test the release immediately after upload.</p></td>
+</tr>
+<tr class="row-even"><td><p>twine</p></td>
+<td><p>any</p></td>
+<td><p>Path or configuration object passed directly to Twine. <code class="docutils literal notranslate"><span class="pre">None</span></code> uses the default <code class="docutils literal notranslate"><span class="pre">~/.pypirc</span></code> settings.</p></td>
+</tr>
+<tr class="row-odd"><td><p>verbose</p></td>
+<td><p>int</p></td>
+<td><p>Verbosity level for logging; higher values emit more detailed progress information useful during troubleshooting.</p></td>
+</tr>
+</tbody>
+</table>
+<p>A typical invocation that disables cleaning and installation while enabling verbose output might look like this:</p>
+</section>
+</section>
+<section id="retrieve-pypi-credentials">
+<h1>Retrieve PyPI Credentials<a class="headerlink" href="#retrieve-pypi-credentials" title="Link to this heading"></a></h1>
+<p>pyrlease can automatically reads authentication details from a local <code class="docutils literal notranslate"><span class="pre">.pypirc</span></code> configuration file, which is the standard location for Twine to find your PyPI username and password or API token.
+The function returns a tuple <code class="docutils literal notranslate"><span class="pre">(username,</span> <span class="pre">password)</span></code> if both keys are present in the <code class="docutils literal notranslate"><span class="pre">[pypi]</span></code> section; otherwise it falls back to <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None)</span></code>.  When the optional <code class="docutils literal notranslate"><span class="pre">verbose</span></code> flag is set to a value of three or higher, the function prints diagnostic information and prompts the user to provide missing credentials interactively.</p>
+<hr>
+<center>
+        <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
+        <!-- Show an image ad -->
+        <!-- <div data-ea-publisher="erdogantgithubio" data-ea-type="image"></div> -->
+        <div data-ea-publisher="erdogantgithubio" data-ea-type="image" data-ea-style="stickybox"></div>
+</center>
+<hr></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Summary.html" class="btn btn-neutral float-left" title="Background" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Erdogan Taskesen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

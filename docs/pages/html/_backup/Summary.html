@@ -1,0 +1,165 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summary &mdash; irelease irelease documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=e0179649" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=ce29bd76"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            irelease
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installation.html#uninstall">Uninstall</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Summary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Summary.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Summary.html#schematic-overview">Schematic Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Examples.html">Basic Run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples.html#run-with-parameters">Run with Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples.html#retrieve-pypi-credentials">Retrieve PyPI Credentials</a></li>
+</ul>
+
+    <a href= "../genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">irelease</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Summary</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_backup/Summary.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="summary">
+<h1>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h1>
+<section id="background">
+<h2>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h2>
+<p>The <em>clizard</em> library is conceived as a bridge between the intricate logic of Python release workflows and the simplicity expected from modern command‑line tools. By introspecting a project’s <cite>irelease.py</cite> module, it automatically generates an executable entry point (<cite>clizard_main.py</cite>) that mirrors the developer’s workflow while still permitting interactive overrides. This design eliminates repetitive boilerplate code, reduces human error during packaging, and guarantees that every release follows a consistent set of steps.</p>
+<p>Central to <em>clizard</em> is its treatment of configuration files—such as <cite>.clizard</cite> for command metadata and <cite>.pypirc</cite> for authentication—as first‑class citizens in the build process. When a user invokes the generated CLI, the framework loads these files, applies any user overrides, and then executes the release logic defined in <cite>irelease.py</cite>. The result is a single command that can be called from scripts, CI pipelines, or directly by developers, providing a unified experience across all environments.</p>
+<p>Another driving motivation for <em>clizard</em> lies in its lightweight dependency footprint. Unlike full‑blown frameworks such as Click or Typer, it relies on minimal standard library modules while still offering interactive prompts and argument parsing. This makes it an attractive choice for projects that need a quick, maintainable release tool without the overhead of additional packages.</p>
+</section>
+<section id="output">
+<h2>Output<a class="headerlink" href="#output" title="Link to this heading"></a></h2>
+<p>Running the <em>clizard</em> command-line interface produces a fully prepared distribution ready for upload to PyPI or any other package index. The output includes a built wheel, source tarball, and optionally a signed artifact if GPG keys are configured. Additionally, the CLI can generate changelogs, update version numbers in source files, and commit these changes back to the repository automatically.</p>
+<p>The library’s design ensures that every step of the build process is transparent: from dependency resolution to packaging, each action emits concise log messages. Users can capture this output for audit purposes or integrate it into continuous‑integration pipelines where visibility into the release lifecycle is critical.</p>
+<p>A typical invocation might look like:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pyrelease-cli<span class="w"> </span>run<span class="w"> </span>--dry-run
+<span class="go">INFO: Loading configuration from .clizard</span>
+<span class="go">INFO: Resolving dependencies...</span>
+<span class="go">INFO: Building wheel for myproject==1.2.3</span>
+<span class="go">INFO: Uploading to PyPI...</span>
+</pre></div>
+</div>
+<p>If the <cite>–dry-run</cite> flag is omitted, the command will push the artifacts to the configured index and commit the updated version tags.</p>
+</section>
+<section id="schematic-overview">
+<h2>Schematic Overview<a class="headerlink" href="#schematic-overview" title="Link to this heading"></a></h2>
+<p>The following ASCII diagram illustrates the high‑level workflow that <em>clizard</em> orchestrates when a user executes the generated CLI. Each block represents a distinct phase in the release pipeline, and arrows indicate data flow between them.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>+-------------------+      +--------------------+
+|  User Input (CLI) | ---&gt; |  Parse &amp; Validate  |
++-------------------+      +--------------------+
+          |                           |
+          v                           v
++-------------------+      +--------------------+
+| Load Config Files | ---&gt; | Resolve Dependencies|
++-------------------+      +--------------------+
+          |                           |
+          v                           v
++-------------------+      +--------------------+
+| Build Artifacts    | ---&gt; | Sign &amp; Upload     |
++-------------------+      +--------------------+
+          |                           |
+          v                           v
++-------------------+      +--------------------+
+| Commit Changes     | &lt;--- | Post‑Release Hooks|
++-------------------+      +--------------------+
+</pre></div>
+</div>
+<p>The diagram emphasizes that <em>clizard</em> treats the release process as a series of composable, deterministic steps. Each step can be overridden or extended via hooks defined in <cite>irelease.py</cite>, allowing developers to inject custom logic without modifying the core CLI generator.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Erdogan Taskesen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

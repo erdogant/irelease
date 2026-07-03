@@ -1,0 +1,175 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>github_release_preparation &mdash; irelease irelease documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=e0179649" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=ce29bd76"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            irelease
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installation.html#uninstall">Uninstall</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Summary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Summary.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Summary.html#schematic-overview">Schematic Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Examples.html">Basic Run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples.html#run-with-parameters">Run with Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples.html#retrieve-pypi-credentials">Retrieve PyPI Credentials</a></li>
+</ul>
+
+    <a href= "../genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">irelease</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">github_release_preparation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_drafts/github_release_preparation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="github-release-preparation">
+<h1>github_release_preparation<a class="headerlink" href="#github-release-preparation" title="Link to this heading"></a></h1>
+<section id="getting-the-latest-github-release-version">
+<h2>Getting the Latest GitHub Release Version<a class="headerlink" href="#getting-the-latest-github-release-version" title="Link to this heading"></a></h2>
+<p>When preparing a new release of your software it is crucial to know which version number has already been published on GitHub. Relying on manual inspection of the web interface or on ad‑hoc scripts can quickly lead to mistakes, especially in projects with many contributors or frequent releases. The <cite>github_version</cite> helper function abstracts all network communication and semantic‑version logic into a single call, allowing you to retrieve the most recent tag reliably and consistently.</p>
+<p>The implementation first determines whether a shallow clone of the repository is required or if it can query the GitHub API directly. In the latter case it performs a GET request against the releases endpoint (<cite>/repos/{owner}/{repo}/releases</cite>), handling pagination automatically so that even repositories with dozens of tags are processed efficiently. Once all tag names have been collected, the function applies semantic‑version ordering to select the highest version. If a leading <cite>v</cite> is present in the tag name it is stripped before returning the result, ensuring that downstream tooling receives a clean version string.</p>
+<p>Because many projects use pre‑release or draft tags (for example <cite>v1.2.3-beta</cite>) the function accepts an optional glob pattern (<cite>tag_pattern</cite>) to filter which tags should be considered. By default it looks for tags starting with <cite>v</cite>, but you can override this behavior by passing a custom pattern such as <cite>*beta</cite> or <cite>release-*</cite>. This flexibility makes the helper suitable for both strict semantic‑versioning workflows and more relaxed tagging schemes.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 10.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>repo_owner</p></td>
+<td><p>str</p></td>
+<td><p>GitHub username or organization that owns the repository.</p></td>
+</tr>
+<tr class="row-odd"><td><p>repo_name</p></td>
+<td><p>str</p></td>
+<td><p>Name of the target repository.</p></td>
+</tr>
+<tr class="row-even"><td><p>tag_pattern</p></td>
+<td><p>str, optional</p></td>
+<td><p>Glob pattern used to filter tags; defaults to <code class="docutils literal notranslate"><span class="pre">&quot;v*&quot;</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>auth_token</p></td>
+<td><p>str, optional</p></td>
+<td><p>Personal access token for private repositories or higher rate limits; if omitted the function falls back to the <cite>GITHUB_TOKEN</cite> environment variable.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">irelease</span><span class="w"> </span><span class="kn">import</span> <span class="n">github_version</span>
+
+<span class="c1"># Retrieve latest release from GitHub</span>
+<span class="n">latest</span> <span class="o">=</span> <span class="n">github_version</span><span class="p">(</span><span class="s2">&quot;myorg&quot;</span><span class="p">,</span> <span class="s2">&quot;mypackage&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Latest released version: </span><span class="si">{</span><span class="n">latest</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="important-notes">
+<h3>Important Notes<a class="headerlink" href="#important-notes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Ensure network connectivity and that the repository is public or you have a valid token set in <cite>GITHUB_TOKEN</cite>.</p></li>
+<li><p>The function expects tag names to follow semantic‑versioning; non‑conforming tags may be ignored.</p></li>
+</ul>
+</section>
+<section id="backend-notes">
+<h3>Backend Notes<a class="headerlink" href="#backend-notes" title="Link to this heading"></a></h3>
+<p><cite>github_version</cite> is defined in <code class="docutils literal notranslate"><span class="pre">irelease.py</span></code> and relies on the <cite>requests</cite> library. It is not exposed by the package’s public API, so it must be imported directly from <cite>irelease</cite>. The function does not modify local files; it only reads data from GitHub.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Erdogan Taskesen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examples &mdash; irelease irelease documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=e0179649" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=ce29bd76"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            irelease
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+              <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Installation.html#uninstall">Uninstall</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Summary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Summary.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Summary.html#schematic-overview">Schematic Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Examples.html">Basic Run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples.html#run-with-parameters">Run with Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Examples.html#retrieve-pypi-credentials">Retrieve PyPI Credentials</a></li>
+</ul>
+
+    <a href= "../genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">irelease</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Examples</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_backup/Examples - Copy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
+<p>The <em>irelease</em> library is designed to streamline the release process of Python packages by automating metadata detection, version bumping, distribution building, and publishing to PyPI.  In this page we walk through two practical examples that illustrate how to use the core API functions in both their simplest form and with a full set of optional parameters.  Each example contains detailed prose explaining why each step is necessary, a parameter table for the function under discussion, and a runnable code snippet that can be copied directly into a Python REPL or script.</p>
+<section id="basic-import-and-execution">
+<h2>Basic Import and Execution<a class="headerlink" href="#basic-import-and-execution" title="Link to this heading"></a></h2>
+<p>The most common way to invoke <em>irelease</em> is by importing the package and calling <code class="xref py py-func docutils literal notranslate"><span class="pre">irelease.run()</span></code> without any arguments.  This pattern is useful for quick, ad‑hoc releases when you are working in the root directory of a repository that follows the standard layout (i.e., it contains either a <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> or a <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>).  By relying on the default parameters, you let <em>irelease</em> infer the package name, discover the current version, and perform all subsequent steps automatically.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import irelease</span>
+<span class="c1"># print(irelease.__version__)</span>
+
+<span class="n">irelease</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-usage-with-parameters">
+<h2>Advanced Usage with Parameters<a class="headerlink" href="#advanced-usage-with-parameters" title="Link to this heading"></a></h2>
+<p>For more control over the release pipeline, <code class="xref py py-func docutils literal notranslate"><span class="pre">irelease.run()</span></code> accepts several optional keyword arguments that allow you to tailor each step of the process.  This is especially useful when working across multiple repositories or when certain stages (such as cleaning the build directory or installing the package locally) need to be skipped.  The following example demonstrates a complete workflow where we specify the repository owner, the package name, disable the clean and install steps, set the Twine version to <code class="docutils literal notranslate"><span class="pre">None</span></code> so that the default is used, and increase verbosity for detailed logging.</p>
+<p>The rationale behind each parameter is as follows:</p>
+<section id="important-notes">
+<h3>Important Notes<a class="headerlink" href="#important-notes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>The module header indicates this is part of the <em>irelease</em> project (MIT license).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run()</span></code> can be called with positional arguments for <code class="docutils literal notranslate"><span class="pre">repo</span></code> and <code class="docutils literal notranslate"><span class="pre">pkg</span></code>; keyword arguments are optional.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Erdogan Taskesen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
