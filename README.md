@@ -1,6 +1,7 @@
 # irelease
 [![Python](https://img.shields.io/pypi/pyversions/irelease)](https://img.shields.io/pypi/pyversions/irelease)
 [![PyPI Version](https://img.shields.io/pypi/v/irelease)](https://pypi.org/project/irelease/)
+[![Docs](https://img.shields.io/badge/Sphinx-Docs-Green)](https://erdogant.github.io/irelease/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/erdogant/irelease/blob/master/LICENSE)
 [![Forks](https://img.shields.io/github/forks/erdogant/irelease.svg)](https://github.com/erdogant/irelease/network)
 [![Open Issues](https://img.shields.io/github/issues/erdogant/irelease.svg)](https://github.com/erdogant/irelease/issues)
