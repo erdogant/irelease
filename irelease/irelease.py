@@ -153,17 +153,25 @@ def run(username, packagename, clean=True, install=False, twine=None, verbose=3)
 
 
 # %% Final message
-def _fin_message(username, packagename, current_version, git_version, git, git_pathname, user_input, verbose):
+def _fin_message(packagename, verbose):
+    if verbose>=2:
+        print('[irelease] ================================================================')
+        print(f'[irelease] Release: {packagename} done!')
+        print('[irelease] ================================================================')
+
+
+
+# %% Open webbrowser
+def _open_browser(username, packagename, current_version, git, git_pathname, user_input, verbose):
     if user_input=='':
         if verbose>=2:
             print('[irelease] ================================================================')
-            print('[irelease] >  Almost done but one manual action is required:')
+            print('[irelease] >  Register your release at git source :')
             print('[irelease] 1. Go to your %s most recent releases.' %(git))
             print('[irelease] 2. Press botton [Create release from tag]')
             print('[irelease] 3. Set [Release title]: v%s' %(current_version))
             print('[irelease] 4. Make a description in the field: [Create release from Tag]')
             print('[irelease] 5. Press <Publish release> at the bottom of the page.')
-            print('[irelease] 6. Fin!')
             print('[irelease] ================================================================')
 
         # Open webbroswer and navigate to git to add version
@@ -175,7 +183,7 @@ def _fin_message(username, packagename, current_version, git_version, git, git_p
         webbrowser.open(git_release_link, new=2)
         if verbose>=2:
             print('[irelease] %s' %(git_release_link))
-            print('[irelease] ================================================================')
+
 
 
 # %% Get latest github/gitlab version
@@ -287,6 +295,7 @@ def _make_build_and_install(packagename, current_version, install):
 def _github_set_tag_and_push(current_version, user_input, verbose=3):
     # Push to git and set the Tag.
     # Only continue if the previous state was not to [Q]uit!
+    # Ensure tag always starts with 'v'
     if user_input=='':
         print('[irelease] ================================================================')
         print("[irelease] Type [Q] to Quit and [Enter] to push to Git and create tag [%s]." %(current_version))
@@ -494,7 +503,7 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
     # Remove build directories
     if verbose>=3 and clean:
         input("[irelease] Press [Enter] to clean previous local builds from the package directory..")
-        print('[irelease] =========================================================')
+        print('[irelease] =========================================================================')
         _make_clean(packagename, verbose=verbose)
     # Version found, lets move on:
     current_version = getversion.group(1)
@@ -506,7 +515,7 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
         if verbose>=3: print("[irelease] Version is not checked on %s." %(git))
 
     # Print info about the version
-    print('[irelease] =========================================================')
+    print('[irelease] =========================================================================')
     if git_version=='0.0.0':
         if verbose>=3: print("[irelease] Release package: [%s]" %(packagename))
         VERSION_OK = True
@@ -525,53 +534,94 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
             print('[irelease] WARNING: Local version : %s' %(current_version))
             print('[irelease] WARNING: %s version: %s' %(git, git_version))
 
+    # if not current_version.startswith('v'):
+    #     current_version = f"v{current_version}"
+
     # Make build and install
     user_input = _make_build_and_install(packagename, current_version, install)
     # Set tag to github and push
     user_input = _github_set_tag_and_push(current_version, user_input, verbose=verbose)
+    # Open browser
+    _open_browser(username, packagename, current_version, git, git_pathname, user_input, verbose)
     # Upload to pypi
-    user_input = _upload_to_pypi(twine, user_input, verbose=verbose)
+    user_input = _upload_to_pypi(twine, verbose=verbose)
     # Fin message and webbrowser
-    _fin_message(username, packagename, current_version, git_version, git, git_pathname, user_input, verbose)
+    _fin_message(packagename, verbose)
 
 
 # %% Upload to pypi
-def _upload_to_pypi(twine, user_input, verbose=3):
-    # Push to git and set the Tag.
-    # Only continue if the previous state was not to [Q]uit!
-    if user_input=='':
-        print('[irelease] =========================================================')
-        print("[irelease] Type [Q] to Quit and [Enter] to release on PyPi using Twine.")
-        print('[irelease] =========================================================')
-        user_input = input("[irelease] > ")
+def find_release_workflow(start_dir):
+    """Search recursively for release.yml in typical CI directories."""
+    candidates = ['.github', '.gitlab', '.git', 'ci', 'workflow', 'workflows']
+    for root, dirs, files in os.walk(start_dir):
+        # Only search inside known CI dirs for speed + correctness
+        if os.path.basename(root).lower() in candidates:
+            if 'release.yml' in files or 'release.yaml' in files:
+                return os.path.join(root, 'release.yml')
+    return None
 
-        if user_input=='':
-            bashCommand=''
-            if twine is None:
-                bashCommand = "twine" + ' upload dist/*'
-            elif os.path.isfile(twine):
-                bashCommand = twine + ' upload dist/*'
 
-            if verbose>=3: print('[irelease] %s' %(bashCommand))
+def ask_manual_pypi_push(verbose=3):
+    """Ask user whether to manually push to PyPI if release.yml exists."""
+    workflow_path = find_release_workflow(os.getcwd())
 
-            # Get PyPI credentials
-            username, password = get_pypi_credentials(verbose=verbose)
+    if workflow_path is None:
+        print('[irelease] ====================================================================')
+        print("[irelease] Type [n]o to Quit and [y]es to release on PyPI using Twine.")
+        print('[irelease] ====================================================================')
+    else:
+        print('[irelease] ======================================================================')
+        print(f"[irelease] GitHub Trusted Publishing workflow found: {workflow_path}")
+        print("[irelease] Do you also want to upload to PyPI using pyrelease? [y/n]")
+        print('[irelease] ======================================================================')
 
-            if (username is not None) and (password is not None):
-                print('[irelease] =========================================================')
-                print("[irelease] Hit <enter> use the username and password from .pypirc")
-                print('[irelease] =========================================================')
-                user_input = input("[irelease] > ")
-                if user_input=='':
-                    bashCommand = bashCommand + ' -u ' + username + ' -p ' + password
-            try:
-                os.system(bashCommand)
-            except:
-                pass
+    # Loop until valid input
+    while True:
+        user_input = input("[irelease] > ").strip().lower()
+        if user_input in ('y', 'n'):
+            return user_input=='y'
 
-    # return
-    return user_input
+        print("[irelease] Invalid input. Please type 'y' or 'n'.")
 
+
+def _upload_to_pypi(twine, verbose=3):
+    """Manual PyPI upload pipeline."""
+    allow_manual = ask_manual_pypi_push(verbose=verbose)
+    if not allow_manual:
+        print('[irelease] Manual PyPI upload aborted.')
+        return 'Q'
+
+    # Continue only if user_input was empty (meaning: proceed)
+    if allow_manual:
+        # Build twine command
+        if twine is None:
+            bashCommand = "twine upload dist/*"
+        elif os.path.isfile(twine):
+            bashCommand = f"{twine} upload dist/*"
+        else:
+            print('[irelease] Invalid twine path.')
+            return 'Q'
+
+        if verbose >= 3:
+            print(f'[irelease] {bashCommand}')
+
+        # Get PyPI credentials
+        username, password = get_pypi_credentials(verbose=verbose)
+
+        if username and password:
+            print('[irelease] =========================================================')
+            print("[irelease] Hit <enter> use the username and password from .pypirc")
+            print('[irelease] =========================================================')
+            confirm = input("[irelease] > ")
+            if confirm == '':
+                bashCommand += f' -u {username} -p {password}'
+
+        try:
+            os.system(bashCommand)
+        except Exception as e:
+            print(f'[irelease] Error: {e}')
+
+    return allow_manual
 
 # %% Main function
 def main():
@@ -594,4 +644,9 @@ def main():
     args = parser.parse_args()
 
     # Go to main
-    run(args.username, args.package, clean=args.clean, twine=args.twine, verbose=args.verbosity)
+    try:
+        run(args.username, args.package, clean=args.clean, twine=args.twine, verbose=args.verbosity)
+    except KeyboardInterrupt:
+        print('\n[irelease] ================================================================')
+        print('[irelease] Interrupted by user (Ctrl+C). Aborting pipeline.')
+        print('[irelease] ================================================================')
