@@ -25,19 +25,45 @@ IGNORE_DIRS_IN_PACKAGE = np.array([f for f in os.listdir('.') if os.path.isdir(f
 EXCLUDE_DIR = np.unique(np.array(list(IGNORE_DIRS_IN_PACKAGE) + ['build', 'dist', 'doc', 'docs', 'depricated']))
 
 # %%
-def get_pypi_credentials(verbose=3):
+def get_registry_credentials(registry='pypi', verbose=3):
+    """Read credentials from .pypirc for a named registry section.
+
+    Parameters
+    ----------
+    registry : str
+        The section name in .pypirc to read from (e.g. 'pypi', 'corporate').
+        Defaults to 'pypi'.
+    verbose : int
+        Verbosity level.
+
+    Returns
+    -------
+    tuple[str|None, str|None, str|None]
+        (username, password, repository_url) — any value is None when absent.
+    """
     config = configparser.ConfigParser()
     config.read('.pypirc')
 
-    if 'pypi' in config:
-        pypi_section = config['pypi']
-        if 'username' in pypi_section and 'password' in pypi_section:
-            username = pypi_section['username']
-            password = pypi_section['password']
-            return username, password
+    if registry in config:
+        section = config[registry]
+        username = section.get('username', None)
+        password = section.get('password', None)
+        repository_url = section.get('repository', None)
+        if username and password:
+            return username, password, repository_url
         else:
-            if verbose>=3: print('[irelease] No [.pypirc] file found. Type in the username and password manually.')
-    return None, None
+            if verbose >= 3:
+                print(f'[irelease] [.pypirc] section [{registry}] is incomplete. Username and/or password missing.')
+    else:
+        if verbose >= 3:
+            print(f'[irelease] No [{registry}] section found in .pypirc. Credentials must be provided manually.')
+    return None, None, None
+
+
+# Keep old name as a compatibility shim so external callers are not broken.
+def get_pypi_credentials(verbose=3):
+    username, password, _ = get_registry_credentials(registry='pypi', verbose=verbose)
+    return username, password
 
 # %% Make executable:
 def make_script():
@@ -63,9 +89,10 @@ def make_script():
 
 
 # %% def main(username, packagename=None, verbose=3):
-def run(username, packagename, clean=True, install=False, twine=None, verbose=3):
+def run(username, packagename, clean=True, install=False, twine=None, verbose=3,
+        repository_url=None, api_key=None, registry='pypi'):
 
-    """Make new release on git and PyPi.
+    """Make new release on git and a package registry (PyPI by default).
 
     Description
     -----------
@@ -78,7 +105,7 @@ def run(username, packagename, clean=True, install=False, twine=None, verbose=3)
         6. Check if the current version is newer then github latest--version.
             a. Make new wheel, build and install package
             b. Set tag to newest version and push to git
-            c. Upload to PyPi (credentials required)
+            c. Upload to the target registry (credentials required)
 
     Parameters
     ----------
@@ -92,6 +119,20 @@ def run(username, packagename, clean=True, install=False, twine=None, verbose=3)
         Filepath to the executable of twine.
     verbose : int
         Print message. The default is 3.
+    repository_url : str or None
+        URL of a custom package registry
+        (e.g. ``'https://nexus.company.com/repository/pypi-internal/'``).
+        When None (the default) packages are uploaded to PyPI.
+        Can also be set via the ``IRELEASE_REPOSITORY_URL`` environment variable.
+    api_key : str or None
+        API token or password for the registry. Highest-priority credential
+        source; when supplied it is passed to twine directly and ``.pypirc``
+        is not consulted. Can also be set via the ``IRELEASE_API_KEY``
+        environment variable.
+    registry : str
+        Named section in ``.pypirc`` to read credentials from when ``api_key``
+        is not provided. Defaults to ``'pypi'``. Can also be set via the
+        ``IRELEASE_REGISTRY`` environment variable.
 
     Returns
     -------
@@ -99,10 +140,20 @@ def run(username, packagename, clean=True, install=False, twine=None, verbose=3)
 
     Examples
     --------
-    >>> # Go to the root of the directory package you aim to release and type:
-    >>> irelease
-    >>> # Description of the input arguments:
-    >>> irelease --help
+    >>> # Standard PyPI release (same as before):
+    >>> irelease.run('myuser', 'mypackage')
+
+    >>> # Corporate Nexus registry using a token:
+    >>> irelease.run('myuser', 'mypackage',
+    ...              repository_url='https://nexus.company.com/repository/pypi-internal/',
+    ...              api_key='my-secret-token')
+
+    >>> # Corporate registry configured entirely via .pypirc [corporate] section:
+    >>> irelease.run('myuser', 'mypackage', registry='corporate')
+
+    >>> # CLI equivalents:
+    >>> # irelease --repository-url https://nexus.company.com/… --api-key TOKEN
+    >>> # irelease --registry corporate
 
     References
     ----------
@@ -112,7 +163,10 @@ def run(username, packagename, clean=True, install=False, twine=None, verbose=3)
 
     """
     # Set defaults
-    username, packagename, clean, install, twine, git, git_pathname, verbose = _set_defaults(username, packagename, clean, install, twine, verbose)
+    (username, packagename, clean, install, twine, git, git_pathname, verbose,
+     repository_url, api_key, registry) = _set_defaults(
+        username, packagename, clean, install, twine, verbose,
+        repository_url=repository_url, api_key=api_key, registry=registry)
     # Get package name
     packagename = _package_name_infer(packagename, verbose=verbose)
     # Determine github/gitlab
@@ -128,12 +182,14 @@ def run(username, packagename, clean=True, install=False, twine=None, verbose=3)
             os.system('cls')
         else:
             os.system('clear')
+        registry_display = repository_url if repository_url else f'PyPI [{registry}]'
         print('[irelease] ================================================================')
         print('[irelease] username  : %s' %username)
         print('[irelease] Package   : %s' %packagename)
         print('[irelease] Git       : %s' %git)
         print('[irelease] Install   : %s' %install)
         print('[irelease] Clean     : %s' %clean)
+        print('[irelease] Registry  : %s' %registry_display)
         print('[irelease] init file : %s' %initfile)
         print('[irelease] ================================================================')
 
@@ -141,7 +197,8 @@ def run(username, packagename, clean=True, install=False, twine=None, verbose=3)
         # Extract version from __init__.py
         getversion = _getversion(initfile)
         if getversion:
-            _try_to_release(username, packagename, getversion, initfile, install, clean, twine, git, git_pathname, verbose)
+            _try_to_release(username, packagename, getversion, initfile, install, clean, twine, git, git_pathname, verbose,
+                            repository_url=repository_url, api_key=api_key, registry=registry)
         else:
             if verbose>=1: print("[irelease] ERROR: Unable to find version string in %s. Make sure that the operators are space seperated eg.: __version__ = '0.1.0'" % (initfile,))
     else:
@@ -456,7 +513,8 @@ def _package_name(git, verbose=3):
     return package
 
 
-def _set_defaults(username, packagename, clean, install, twine, verbose):
+def _set_defaults(username, packagename, clean, install, twine, verbose,
+                  repository_url=None, api_key=None, registry='pypi'):
     # Defaults
     # Default verbosity value is 0
     if verbose is None:
@@ -476,6 +534,14 @@ def _set_defaults(username, packagename, clean, install, twine, verbose):
         if _get_platform()=='windows':
             twine = os.environ.get('TWIN', None)
 
+    # Registry defaults: fall back to environment variables when not supplied.
+    if repository_url is None:
+        repository_url = os.environ.get('IRELEASE_REPOSITORY_URL', None)
+    if api_key is None:
+        api_key = os.environ.get('IRELEASE_API_KEY', None)
+    if registry is None or registry == '':
+        registry = os.environ.get('IRELEASE_REGISTRY', 'pypi')
+
     # Get github/gitlab
     git = _git_host(verbose=verbose)
 
@@ -490,7 +556,7 @@ def _set_defaults(username, packagename, clean, install, twine, verbose):
     # Pathname
     git_pathname = _git_pathname(git, username, packagename, verbose=verbose)
 
-    return username, packagename, clean, install, twine, git, git_pathname, verbose
+    return username, packagename, clean, install, twine, git, git_pathname, verbose, repository_url, api_key, registry
 
 
 def _getversion(initfile):
@@ -499,7 +565,8 @@ def _getversion(initfile):
 
 
 # %% try to Release
-def _try_to_release(username, packagename, getversion, initfile, install, clean, twine, git, git_pathname, verbose):
+def _try_to_release(username, packagename, getversion, initfile, install, clean, twine, git, git_pathname, verbose,
+                    repository_url=None, api_key=None, registry='pypi'):
     # Remove build directories
     if verbose>=3 and clean:
         input("[irelease] Press [Enter] to clean previous local builds from the package directory..")
@@ -543,8 +610,8 @@ def _try_to_release(username, packagename, getversion, initfile, install, clean,
     user_input = _github_set_tag_and_push(current_version, user_input, verbose=verbose)
     # Open browser
     _open_browser(username, packagename, current_version, git, git_pathname, user_input, verbose)
-    # Upload to pypi
-    user_input = _upload_to_pypi(twine, verbose=verbose)
+    # Upload to registry (PyPI by default, or a custom corporate index)
+    user_input = _upload_to_registry(twine, repository_url=repository_url, api_key=api_key, registry=registry, verbose=verbose)
     # Fin message and webbrowser
     _fin_message(packagename, verbose)
 
@@ -561,18 +628,27 @@ def find_release_workflow(start_dir):
     return None
 
 
-def ask_manual_pypi_push(verbose=3):
-    """Ask user whether to manually push to PyPI if release.yml exists."""
+def ask_manual_pypi_push(repository_url=None, verbose=3):
+    """Ask user whether to manually push to a package registry.
+
+    Parameters
+    ----------
+    repository_url : str or None
+        Custom registry URL shown in the prompt. None means PyPI.
+    verbose : int
+        Verbosity level.
+    """
+    registry_label = repository_url if repository_url else 'PyPI'
     workflow_path = find_release_workflow(os.getcwd())
 
     if workflow_path is None:
         print('[irelease] ====================================================================')
-        print("[irelease] Type [n]o to Quit and [y]es to release on PyPI using Twine.")
+        print(f"[irelease] Type [n]o to Quit and [y]es to release on {registry_label} using Twine.")
         print('[irelease] ====================================================================')
     else:
         print('[irelease] ======================================================================')
         print(f"[irelease] GitHub Trusted Publishing workflow found: {workflow_path}")
-        print("[irelease] Do you also want to upload to PyPI using pyrelease? [y/n]")
+        print(f"[irelease] Do you also want to upload to {registry_label} using irelease? [y/n]")
         print('[irelease] ======================================================================')
 
     # Loop until valid input
@@ -584,44 +660,94 @@ def ask_manual_pypi_push(verbose=3):
         print("[irelease] Invalid input. Please type 'y' or 'n'.")
 
 
-def _upload_to_pypi(twine, verbose=3):
-    """Manual PyPI upload pipeline."""
-    allow_manual = ask_manual_pypi_push(verbose=verbose)
+def _upload_to_registry(twine, repository_url=None, api_key=None, registry='pypi', verbose=3):
+    """Upload distribution archives to a package registry via Twine.
+
+    Credential resolution order (first match wins):
+      1. ``api_key`` parameter — used directly as the token/password.
+      2. ``.pypirc`` ``[<registry>]`` section — username + password read from file;
+         the ``repository`` key in that section is also used when ``repository_url``
+         is not explicitly provided.
+      3. Twine's own interactive prompt — fallback when nothing else is configured.
+
+    Parameters
+    ----------
+    twine : str or None
+        Path to a custom twine executable. None uses the ``twine`` on PATH.
+    repository_url : str or None
+        URL of the target registry (e.g. ``https://nexus.company.com/…``).
+        None defaults to PyPI. Overrides any ``repository`` key in ``.pypirc``.
+    api_key : str or None
+        API token or password supplied directly (bypasses .pypirc lookup).
+        When set, ``__token__`` is used as the username unless the token already
+        encodes a username (i.e. it does not start with ``pypi-`` or ``__``).
+    registry : str
+        Named section in ``.pypirc`` to read credentials from. Default ``'pypi'``.
+    verbose : int
+        Verbosity level.
+    """
+    allow_manual = ask_manual_pypi_push(repository_url=repository_url, verbose=verbose)
     if not allow_manual:
-        print('[irelease] Manual PyPI upload aborted.')
+        registry_label = repository_url if repository_url else 'PyPI'
+        print(f'[irelease] Upload to {registry_label} aborted.')
         return 'Q'
 
-    # Continue only if user_input was empty (meaning: proceed)
-    if allow_manual:
-        # Build twine command
-        if twine is None:
-            bashCommand = "twine upload dist/*"
-        elif os.path.isfile(twine):
-            bashCommand = f"{twine} upload dist/*"
-        else:
-            print('[irelease] Invalid twine path.')
-            return 'Q'
+    # --- Build base twine command -------------------------------------------
+    if twine is None:
+        bashCommand = "twine upload dist/*"
+    elif os.path.isfile(twine):
+        bashCommand = f"{twine} upload dist/*"
+    else:
+        print('[irelease] Invalid twine path.')
+        return 'Q'
 
+    # --- Append --repository-url when a custom registry is requested ---------
+    # Priority: explicit parameter > .pypirc repository key (loaded below)
+    effective_url = repository_url  # may be overridden by .pypirc below
+
+    # --- Resolve credentials -------------------------------------------------
+    if api_key:
+        # Explicit token: highest priority — no .pypirc lookup needed.
+        bashCommand += f' -u __token__ -p {api_key}'
         if verbose >= 3:
-            print(f'[irelease] {bashCommand}')
+            print('[irelease] Using api_key provided directly.')
+    else:
+        # Try .pypirc for the named registry section.
+        rc_username, rc_password, rc_url = get_registry_credentials(registry=registry, verbose=verbose)
 
-        # Get PyPI credentials
-        username, password = get_pypi_credentials(verbose=verbose)
+        # .pypirc repository key is a fallback URL only when none was given explicitly.
+        if effective_url is None and rc_url:
+            effective_url = rc_url
 
-        if username and password:
+        if rc_username and rc_password:
             print('[irelease] =========================================================')
-            print("[irelease] Hit <enter> use the username and password from .pypirc")
+            print(f"[irelease] Hit <enter> to use credentials from .pypirc [{registry}]")
             print('[irelease] =========================================================')
             confirm = input("[irelease] > ")
             if confirm == '':
-                bashCommand += f' -u {username} -p {password}'
+                bashCommand += f' -u {rc_username} -p {rc_password}'
+        # else: no credentials found — twine will prompt interactively.
 
-        try:
-            os.system(bashCommand)
-        except Exception as e:
-            print(f'[irelease] Error: {e}')
+    # --- Append --repository-url (after credentials so flags are ordered) ----
+    if effective_url:
+        bashCommand += f' --repository-url {effective_url}'
+
+    if verbose >= 3:
+        # Mask the password in the printed command so it doesn't appear in logs.
+        safe_cmd = re.sub(r'(-p\s+)\S+', r'\1****', bashCommand)
+        print(f'[irelease] {safe_cmd}')
+
+    try:
+        os.system(bashCommand)
+    except Exception as e:
+        print(f'[irelease] Error: {e}')
 
     return allow_manual
+
+
+# Keep the old name as a compatibility shim so any external callers are not broken.
+def _upload_to_pypi(twine, verbose=3):
+    return _upload_to_registry(twine, repository_url=None, api_key=None, registry='pypi', verbose=verbose)
 
 # %% Main function
 def main():
@@ -633,7 +759,19 @@ def main():
 
     """
     # main
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Release a Python package to Git and a package registry.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Registry examples:
+  PyPI (default)        : irelease
+  PyPI with token       : irelease --api-key pypi-MyToken123
+  Corporate Nexus       : irelease --repository-url https://nexus.co/repository/pypi/ --api-key TOKEN
+  Named .pypirc section : irelease --registry corporate
+
+Environment variable equivalents (lower priority than CLI flags):
+  IRELEASE_REPOSITORY_URL, IRELEASE_API_KEY, IRELEASE_REGISTRY
+""")
     # parser.add_argument("github", type=str, help="github account name")
     parser.add_argument("-u", "--username", type=str, help="Username on Github/Gitlab.")
     parser.add_argument("-p", "--package", type=str, help="Package name to be released.")
@@ -641,11 +779,22 @@ def main():
     parser.add_argument("-i", "--install", action="store_true", default=False, help="Install this version locally (default: no).")
     parser.add_argument("-t", "--twine", type=str, help="Path to twine if you have a custom build.")
     parser.add_argument("-v", "--verbosity", type=int, default=3, choices=[0,1,2,3,4,5], help="Verbosity level (default: 3).")
+    parser.add_argument("--repository-url", type=str, default=None,
+                        help="URL of a custom package registry (e.g. https://nexus.company.com/repository/pypi/). "
+                             "Defaults to PyPI. Overrides IRELEASE_REPOSITORY_URL env var.")
+    parser.add_argument("--api-key", type=str, default=None,
+                        help="API token or password for the registry. Passed directly to twine; "
+                             "overrides .pypirc credentials. Overrides IRELEASE_API_KEY env var.")
+    parser.add_argument("--registry", type=str, default='pypi',
+                        help="Named section in .pypirc to read credentials from (default: 'pypi'). "
+                             "Overrides IRELEASE_REGISTRY env var.")
     args = parser.parse_args()
 
     # Go to main
     try:
-        run(args.username, args.package, clean=args.clean, twine=args.twine, verbose=args.verbosity)
+        run(args.username, args.package,
+            clean=args.clean, twine=args.twine, verbose=args.verbosity,
+            repository_url=args.repository_url, api_key=args.api_key, registry=args.registry)
     except KeyboardInterrupt:
         print('\n[irelease] ================================================================')
         print('[irelease] Interrupted by user (Ctrl+C). Aborting pipeline.')
