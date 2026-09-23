@@ -57,7 +57,11 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Basic Run</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#run-with-parameters">Run with Parameters</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#parameters-of-irelease">Parameters of <cite>irelease</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parameters-of-irelease">Parameters of <cite>irelease</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#registry-and-credentials">Registry and credentials</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#code-examples">Code examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#retrieve-pypi-credentials">Retrieve PyPI Credentials</a></li>
@@ -96,6 +100,10 @@
 This default invocation relies on module‑level configuration discovered from the current working directory.
 By inspecting files such as <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> or <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> it automatically determines the project name, version, and author information.
 The function then performs a minimal set of actions: it builds source and wheel distributions, uploads them to PyPI using the locally configured credentials, and creates a corresponding GitHub release tag if a remote repository is detected.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyrelease
+irelease
+</pre></div>
+</div>
 </section>
 <section id="run-with-parameters">
 <h1>Run with Parameters<a class="headerlink" href="#run-with-parameters" title="Link to this heading"></a></h1>
@@ -140,15 +148,63 @@ The function then performs a minimal set of actions: it builds source and wheel 
 <td><p>int</p></td>
 <td><p>Verbosity level for logging; higher values emit more detailed progress information useful during troubleshooting.</p></td>
 </tr>
+<tr class="row-even"><td><p>repository_url</p></td>
+<td><p>str or None</p></td>
+<td><p>URL of a custom package registry (for example <code class="docutils literal notranslate"><span class="pre">https://nexus.company.com/repository/pypi/</span></code>). If omitted, packages are uploaded to PyPI. Use this to target internal registries or testing indexes. Overrides the <code class="docutils literal notranslate"><span class="pre">IRELEASE_REPOSITORY_URL</span></code> environment variable.</p></td>
+</tr>
+<tr class="row-odd"><td><p>api_key</p></td>
+<td><p>str or None</p></td>
+<td><p>API token or password for the target registry. When supplied it is passed directly to Twine and takes precedence over credentials found in <code class="docutils literal notranslate"><span class="pre">.pypirc</span></code>. This is useful for CI systems that inject credentials at runtime. Overrides the <code class="docutils literal notranslate"><span class="pre">IRELEASE_API_KEY</span></code> environment variable.</p></td>
+</tr>
+<tr class="row-even"><td><p>registry</p></td>
+<td><p>str</p></td>
+<td><p>Named section in <code class="docutils literal notranslate"><span class="pre">.pypirc</span></code> to read credentials from (default: <code class="docutils literal notranslate"><span class="pre">'pypi'</span></code>). Use this to select a credentials profile (for example <code class="docutils literal notranslate"><span class="pre">'corporate'</span></code>) when your <code class="docutils literal notranslate"><span class="pre">.pypirc</span></code> contains multiple registry entries. Overrides the <code class="docutils literal notranslate"><span class="pre">IRELEASE_REGISTRY</span></code> environment variable.</p></td>
+</tr>
 </tbody>
 </table>
 <p>A typical invocation that disables cleaning and installation while enabling verbose output might look like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>irelease<span class="w"> </span>--help
+</pre></div>
+</div>
+<section id="registry-and-credentials">
+<h3>Registry and credentials<a class="headerlink" href="#registry-and-credentials" title="Link to this heading"></a></h3>
+<p>In many organizations you will want to publish packages to an internal index or use short‑lived API tokens injected by your CI/CD system. The newer <code class="docutils literal notranslate"><span class="pre">--repository-url</span></code>, <code class="docutils literal notranslate"><span class="pre">--api-key</span></code>, and <code class="docutils literal notranslate"><span class="pre">--registry</span></code> options make that straightforward and safe:</p>
+<ul class="simple">
+<li><p>Explicit <code class="docutils literal notranslate"><span class="pre">--repository-url</span></code> lets you target a private Nexus/Artifactory/DevPI server without modifying global config.</p></li>
+<li><p>Passing <code class="docutils literal notranslate"><span class="pre">--api-key</span></code> on the command line (or via the <code class="docutils literal notranslate"><span class="pre">IRELEASE_API_KEY</span></code> environment variable) avoids storing secrets in <code class="docutils literal notranslate"><span class="pre">.pypirc</span></code> and enables ephemeral credentials in CI.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--registry</span></code> option selects an alternate named section from <code class="docutils literal notranslate"><span class="pre">.pypirc</span></code> when you maintain multiple registry profiles locally.</p></li>
+</ul>
+</section>
+</section>
+<section id="code-examples">
+<h2>Code examples<a class="headerlink" href="#code-examples" title="Link to this heading"></a></h2>
+<p>CLI example (upload to a corporate Nexus using a token):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>irelease<span class="w"> </span>--repository-url<span class="w"> </span>https://nexus.company.com/repository/pypi/<span class="w"> </span>--api-key<span class="w"> </span><span class="s2">&quot;pypi-MyToken123&quot;</span>
+</pre></div>
+</div>
+<p>CLI example (use a named .pypirc profile):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>irelease<span class="w"> </span>--registry<span class="w"> </span>corporate
+</pre></div>
+</div>
+<p>Python API example (equivalent):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">irelease</span><span class="w"> </span><span class="kn">import</span> <span class="n">run</span>
+
+<span class="c1"># Upload to a custom registry using an API key supplied at runtime</span>
+<span class="n">run</span><span class="p">(</span><span class="n">repository_url</span><span class="o">=</span><span class="s2">&quot;https://nexus.company.com/repository/pypi/&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;pypi-MyToken123&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use a named .pypirc section</span>
+<span class="n">run</span><span class="p">(</span><span class="n">registry</span><span class="o">=</span><span class="s2">&quot;corporate&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 </section>
 <section id="retrieve-pypi-credentials">
 <h1>Retrieve PyPI Credentials<a class="headerlink" href="#retrieve-pypi-credentials" title="Link to this heading"></a></h1>
-<p>pyrlease can automatically reads authentication details from a local <code class="docutils literal notranslate"><span class="pre">.pypirc</span></code> configuration file, which is the standard location for Twine to find your PyPI username and password or API token.
+<p>irelease can automatically read authentication details from a local <code class="docutils literal notranslate"><span class="pre">.pypirc</span></code> configuration file, which is the standard location for Twine to find your PyPI username and password or API token.
 The function returns a tuple <code class="docutils literal notranslate"><span class="pre">(username,</span> <span class="pre">password)</span></code> if both keys are present in the <code class="docutils literal notranslate"><span class="pre">[pypi]</span></code> section; otherwise it falls back to <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None)</span></code>.  When the optional <code class="docutils literal notranslate"><span class="pre">verbose</span></code> flag is set to a value of three or higher, the function prints diagnostic information and prompts the user to provide missing credentials interactively.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>irelease<span class="w"> </span>--help
+</pre></div>
+</div>
 <hr>
 <center>
         <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
