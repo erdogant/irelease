@@ -701,6 +701,10 @@ def _upload_to_registry(twine, repository_url=None, api_key=None, registry='pypi
         print('[irelease] Invalid twine path.')
         return 'Q'
 
+    # Add --verbose so PyPI returns the full error details (e.g. file already exists)
+    if verbose >= 3:
+        bashCommand += " --verbose"
+
     # --- Append --repository-url when a custom registry is requested ---------
     # Priority: explicit parameter > .pypirc repository key (loaded below)
     effective_url = repository_url  # may be overridden by .pypirc below
