@@ -171,8 +171,16 @@ def run(username, packagename, clean=True, install=False, twine=None, verbose=3,
     packagename = _package_name_infer(packagename, verbose=verbose)
     # Determine github/gitlab
 
-    if packagename is None: raise Exception('[irelease] ERROR: Package directory does not exists.')
-    if username is None: raise Exception('[irelease] ERROR: %s name does not exists.' %(git))
+    if git is None:
+        raise Exception(
+            '[irelease] ERROR: No .git/config found. '
+            'You appear to be running from a subdirectory (one level too deep). '
+            'Please run irelease from the repository root.'
+        )
+    if packagename is None:
+        raise Exception('[irelease] ERROR: Package directory does not exists.')
+    if username is None:
+        raise Exception('[irelease] ERROR: %s name does not exists.' % (git))
 
     # Get init file from the dir of interest
     initfile = os.path.join(packagename, "__init__.py")
@@ -409,9 +417,18 @@ def _get_platform():
 
 def _git_host(verbose=3):
     # Extract github/gitlab from config file
-    git=None
-    f = open('./.git/config')
+    git = None
+    try:
+        f = open('./.git/config')
+    except FileNotFoundError:
+        print(
+            "No .git/config found in the current directory. "
+            "You appear to be running from a subdirectory (one level too deep). "
+            "Please run irelease from the repository root."
+        )
+        return None
     gitconfig = f.readlines()
+    f.close()
     for line in gitconfig:
         line = line.replace('\t', '')
         if re.search('github.com', line) is not None:
@@ -423,24 +440,33 @@ def _git_host(verbose=3):
 
 def _git_username(git, verbose=3):
     # Extract github username from config file
-    username=None
-    if verbose>=4: print('[release.debug] Extracting github name from .git folder')
-    # Open github config file
-    f = open('./.git/config')
+    username = None
+    if verbose >= 4:
+        print('[release.debug] Extracting github name from .git folder')
+    try:
+        f = open('./.git/config')
+    except FileNotFoundError:
+        print(
+            "No .git/config found in the current directory. "
+            "You appear to be running from a subdirectory (one level too deep). "
+            "Please run irelease from the repository root."
+        )
+        return None
     gitconfig = f.readlines()
+    f.close()
     # Iterate over the lines and search for git@github.com
     for line in gitconfig:
         line = line.replace('\t', '')
         line = line.replace('\n', '')
         geturl = re.search(git + '.com', line)  # SSH
         if not geturl or geturl is None:
-            if git =='gitlab':
+            if git == 'gitlab':
                 geturl = re.search('https://' + git, line)  # HTTPs
-            elif git =='github':
+            elif git == 'github':
                 geturl = re.search('https://' + git + '.com', line)  # HTTPs
         # Extract the username
         if geturl:
-            # exract the username
+            # extract the username
             username_line = line[geturl.end() + 1:]
             username_line = username_line.split('/', 2)[0]
             username = username_line.split('.git', 2)[0]
@@ -451,10 +477,19 @@ def _git_username(git, verbose=3):
 def _git_pathname(git, username, packagename, verbose=3):
     # Extract github username from config file
     git_pathname = ''
-    if verbose>=4: print('[release.debug] Extracting git path from .git folder')
-    # Open github config file
-    f = open('./.git/config')
+    if verbose >= 4:
+        print('[release.debug] Extracting git path from .git folder')
+    try:
+        f = open('./.git/config')
+    except FileNotFoundError:
+        print(
+            "No .git/config found in the current directory. "
+            "You appear to be running from a subdirectory (one level too deep). "
+            "Please run irelease from the repository root."
+        )
+        return ''
     gitconfig = f.readlines()
+    f.close()
     # Iterate over the lines and search for git@github.com
     for line in gitconfig:
         line = line.replace('\t', '')
@@ -513,8 +548,7 @@ def _package_name(git, verbose=3):
     return package
 
 
-def _set_defaults(username, packagename, clean, install, twine, verbose,
-                  repository_url=None, api_key=None, registry='pypi'):
+def _set_defaults(username, packagename, clean, install, twine, verbose, repository_url=None, api_key=None, registry='pypi'):
     # Defaults
     # Default verbosity value is 0
     if verbose is None:
@@ -544,20 +578,22 @@ def _set_defaults(username, packagename, clean, install, twine, verbose,
 
     # Get github/gitlab
     git = _git_host(verbose=verbose)
+    if git is None:
+        # _git_host already logged the error; propagate cleanly
+        return username, packagename, clean, install, twine, None, '', verbose, repository_url, api_key, registry
 
     # Get username
-    if (username is None):
+    if username is None:
         username = _git_username(git, verbose=verbose)
 
     # Get package name
-    if (packagename is None):
+    if packagename is None:
         packagename = _package_name(git, verbose=verbose)
 
     # Pathname
     git_pathname = _git_pathname(git, username, packagename, verbose=verbose)
 
     return username, packagename, clean, install, twine, git, git_pathname, verbose, repository_url, api_key, registry
-
 
 def _getversion(initfile):
     # Check version
